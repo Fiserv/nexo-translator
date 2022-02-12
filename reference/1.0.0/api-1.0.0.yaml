@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Supports a subset of the Nexo payment standards
-  version: v32
+  version: 1.0.0
   title: CommerceHub Nexo Translator REST API
 tags:
   - name: commerce-hub-nexo-translator-controller
