@@ -1,54 +1,12 @@
 openapi: 3.0.0
 info:
   description: Supports a subset of the Nexo payment standards
-  version: 1.0.0
+  version: v32
   title: CommerceHub Nexo Translator REST API
 tags:
   - name: commerce-hub-nexo-translator-controller
     description: Commerce Hub Nexo Translator Controller
 paths:
-  /data-translator/v32:
-    post:
-      tags:
-        - commerce-hub-nexo-translator-controller
-      x-group-name: Data
-      x-proxy-name: Data Translator
-      summary: CommerceHub to Nexo Request Data Translator
-      description: Data Translator from CommerceHub Request to Nexo Request.
-      operationId: dataTranslatorV32PostUsingPOST
-      parameters:
-        - name: requestType
-          in: query
-          description: CommerceHub Request Type.
-          required: true
-          schema:
-            type: string
-            enum:
-              - CANCEL
-              - CHARGES
-              - REFUND
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/JsonNode"
-        description: CommerceHub Request (JSON).
-        required: true
-      responses:
-        "200":
-          description: Nexo Request (XML).
-          content:
-            application/xml:
-              schema:
-                $ref: "#/components/schemas/NexoRequestRes"
-        "201":
-          description: Created
-        "401":
-          description: Unauthorized
-        "403":
-          description: Forbidden
-        "404":
-          description: Not Found
   /transaction/v32:
     post:
       tags:
@@ -160,10 +118,10 @@ paths:
         content:
           application/xml:
             schema:
-              $ref: "#/components/schemas/NexoRequestReq"
+              $ref: "#/components/schemas/NexoRequest"
           application/json:
             schema:
-              $ref: "#/components/schemas/NexoRequestReq"
+              $ref: "#/components/schemas/NexoRequest"
         description: Nexo Request
         required: true
       responses:
@@ -188,38 +146,22 @@ servers:
   - url: //localhost:8080/
 components:
   schemas:
-    AcceptedAuthorizationRequestReq:
+    AcceptedAuthorizationRequest:
       type: object
       properties:
         Hdr:
           $ref: "#/components/schemas/Header"
         authorizationRequest:
-          $ref: "#/components/schemas/AuthorizationRequestReq"
-      title: AcceptedAuthorizationRequestReq
-    AcceptedAuthorizationRequestRes:
-      type: object
-      properties:
-        Hdr:
-          $ref: "#/components/schemas/Header"
-        authorizationRequest:
-          $ref: "#/components/schemas/AuthorizationRequestRes"
-      title: AcceptedAuthorizationRequestRes
-    AcceptorCancellationAdviceReq:
+          $ref: "#/components/schemas/AuthorizationRequest"
+      title: AcceptedAuthorizationRequest
+    AcceptorCancellationAdvice:
       type: object
       properties:
         Hdr:
           $ref: "#/components/schemas/Header"
         cancellationAdvice:
-          $ref: "#/components/schemas/CancellationAdviceReq"
-      title: AcceptorCancellationAdviceReq
-    AcceptorCancellationAdviceRes:
-      type: object
-      properties:
-        Hdr:
-          $ref: "#/components/schemas/Header"
-        cancellationAdvice:
-          $ref: "#/components/schemas/CancellationAdviceRes"
-      title: AcceptorCancellationAdviceRes
+          $ref: "#/components/schemas/CancellationAdvice"
+      title: AcceptorCancellationAdvice
     Acquirer:
       type: object
       properties:
@@ -236,31 +178,15 @@ components:
             attribute: false
             wrapped: false
       title: AcquirerIdentification
-    AuthenticationReq:
+    Authentication:
       type: object
       properties:
         AuthntcnMtd:
           type: string
         AuthntcnVal:
           type: string
-      title: AuthenticationReq
-    AuthenticationRes:
-      type: object
-      properties:
-        AuthntcnMtd:
-          type: string
-          xml:
-            name: AuthntcnMtd
-            attribute: false
-            wrapped: false
-        AuthntcnVal:
-          type: string
-          xml:
-            name: AuthntcnVal
-            attribute: false
-            wrapped: false
-      title: AuthenticationRes
-    AuthorizationRequestReq:
+      title: Authentication
+    AuthorizationRequest:
       type: object
       properties:
         Bal:
@@ -270,20 +196,8 @@ components:
         Tx:
           $ref: "#/components/schemas/Transaction"
         environment:
-          $ref: "#/components/schemas/EnvironmentReq"
-      title: AuthorizationRequestReq
-    AuthorizationRequestRes:
-      type: object
-      properties:
-        Bal:
-          $ref: "#/components/schemas/Balance"
-        Cntxt:
-          $ref: "#/components/schemas/Context"
-        Tx:
-          $ref: "#/components/schemas/Transaction"
-        environment:
-          $ref: "#/components/schemas/EnvironmentRes"
-      title: AuthorizationRequestRes
+          $ref: "#/components/schemas/Environment"
+      title: AuthorizationRequest
     Balance:
       type: object
       properties:
@@ -300,7 +214,7 @@ components:
             attribute: false
             wrapped: false
       title: Balance
-    CancellationAdviceReq:
+    CancellationAdvice:
       type: object
       properties:
         Bal:
@@ -310,20 +224,8 @@ components:
         Tx:
           $ref: "#/components/schemas/Transaction"
         environment:
-          $ref: "#/components/schemas/EnvironmentReq"
-      title: CancellationAdviceReq
-    CancellationAdviceRes:
-      type: object
-      properties:
-        Bal:
-          $ref: "#/components/schemas/Balance"
-        Cntxt:
-          $ref: "#/components/schemas/Context"
-        Tx:
-          $ref: "#/components/schemas/Transaction"
-        environment:
-          $ref: "#/components/schemas/EnvironmentRes"
-      title: CancellationAdviceRes
+          $ref: "#/components/schemas/Environment"
+      title: CancellationAdvice
     Card:
       type: object
       properties:
@@ -336,30 +238,16 @@ components:
         protectedCardData:
           $ref: "#/components/schemas/ProtectedCardData"
       title: Card
-    CardHolderReq:
+    CardHolder:
       type: object
       properties:
         Lang:
           type: string
         authentication:
-          $ref: "#/components/schemas/AuthenticationReq"
+          $ref: "#/components/schemas/Authentication"
         taxVerificationResult:
-          $ref: "#/components/schemas/TaxVerificationResultReq"
-      title: CardHolderReq
-    CardHolderRes:
-      type: object
-      properties:
-        Lang:
-          type: string
-          xml:
-            name: Lang
-            attribute: false
-            wrapped: false
-        authentication:
-          $ref: "#/components/schemas/AuthenticationRes"
-        taxVerificationResult:
-          $ref: "#/components/schemas/TaxVerificationResultRes"
-      title: CardHolderRes
+          $ref: "#/components/schemas/TaxVerificationResult"
+      title: CardHolder
     ContentEncryptionAlgorithm:
       type: object
       properties:
@@ -408,7 +296,7 @@ components:
         recipient:
           $ref: "#/components/schemas/Recipient"
       title: EnvelopedData
-    EnvironmentReq:
+    Environment:
       type: object
       properties:
         acquirer:
@@ -416,26 +304,12 @@ components:
         card:
           $ref: "#/components/schemas/Card"
         cardHolder:
-          $ref: "#/components/schemas/CardHolderReq"
+          $ref: "#/components/schemas/CardHolder"
         merchant:
           $ref: "#/components/schemas/Merchant"
         poi:
           $ref: "#/components/schemas/NexoPersonOfInterest"
-      title: EnvironmentReq
-    EnvironmentRes:
-      type: object
-      properties:
-        acquirer:
-          $ref: "#/components/schemas/Acquirer"
-        card:
-          $ref: "#/components/schemas/Card"
-        cardHolder:
-          $ref: "#/components/schemas/CardHolderRes"
-        merchant:
-          $ref: "#/components/schemas/Merchant"
-        poi:
-          $ref: "#/components/schemas/NexoPersonOfInterest"
-      title: EnvironmentRes
+      title: Environment
     Header:
       type: object
       properties:
@@ -466,9 +340,6 @@ components:
             attribute: false
             wrapped: false
       title: InitiatingParty
-    JsonNode:
-      type: object
-      title: JsonNode
     KEK:
       type: object
       properties:
@@ -583,13 +454,13 @@ components:
         poiIdentification:
           $ref: "#/components/schemas/POIIdentification"
       title: NexoPersonOfInterest
-    NexoRequestReq:
+    NexoRequest:
       type: object
       properties:
         AccptrAuthstnReq:
-          $ref: "#/components/schemas/AcceptedAuthorizationRequestReq"
+          $ref: "#/components/schemas/AcceptedAuthorizationRequest"
         AccptrCxlAdvc:
-          $ref: "#/components/schemas/AcceptorCancellationAdviceReq"
+          $ref: "#/components/schemas/AcceptorCancellationAdvice"
         amount:
           type: string
           xml:
@@ -618,47 +489,7 @@ components:
             - UNKNOWN
         sourceType:
           type: string
-      title: NexoRequestReq
-      xml:
-        name: root
-        attribute: false
-        wrapped: false
-    NexoRequestRes:
-      type: object
-      properties:
-        AccptrAuthstnReq:
-          $ref: "#/components/schemas/AcceptedAuthorizationRequestRes"
-        AccptrCxlAdvc:
-          $ref: "#/components/schemas/AcceptorCancellationAdviceRes"
-        amount:
-          type: string
-          xml:
-            name: DollarAmount
-            attribute: false
-            wrapped: false
-        currency_code:
-          type: string
-          xml:
-            name: Currency
-            attribute: false
-            wrapped: false
-        encryptionBlock:
-          type: string
-        encryptionType:
-          type: string
-        keyId:
-          type: string
-        requestType:
-          type: string
-          enum:
-            - CANCEL
-            - CHARGES
-            - HEALTH
-            - REFUND
-            - UNKNOWN
-        sourceType:
-          type: string
-      title: NexoRequestRes
+      title: NexoRequest
       xml:
         name: root
         attribute: false
@@ -803,30 +634,14 @@ components:
             attribute: false
             wrapped: false
       title: RelayIdentification
-    TaxVerificationResultReq:
+    TaxVerificationResult:
       type: object
       properties:
         Mtd:
           type: string
         Rslt:
           type: string
-      title: TaxVerificationResultReq
-    TaxVerificationResultRes:
-      type: object
-      properties:
-        Mtd:
-          type: string
-          xml:
-            name: Mtd
-            attribute: false
-            wrapped: false
-        Rslt:
-          type: string
-          xml:
-            name: Rslt
-            attribute: false
-            wrapped: false
-      title: TaxVerificationResultRes
+      title: TaxVerificationResult
     Traceability:
       type: object
       properties:
