@@ -1,0 +1,1460 @@
+openapi: 3.0.0
+info:
+  description: Supports a subset of the Nexo payment standards
+  version: v32
+  title: CommerceHub Nexo Translator REST API
+tags:
+  - name: commerce-hub-nexo-translator-controller
+    description: Commerce Hub Nexo Translator Controller
+paths:
+  /transaction/v32:
+    post:
+      tags:
+        - commerce-hub-nexo-translator-controller
+      x-group-name: Translator
+      x-proxy-name: Transaction
+      summary: Nexo Transaction
+      description: Performs a transaction posted in Nexo format. Supports a subset of the
+        Nexo payment standards.
+      operationId: transactionV32PostUsingPOST
+      parameters:
+        - name: Accept-Language
+          in: header
+          description: Accept-Language
+          required: true
+          schema:
+            type: string
+        - name: Api-Key
+          in: header
+          description: API key provided to the merchant associating the requests with the
+            appropriate app in the Developer Portal.
+          required: true
+          schema:
+            type: string
+        - name: Authorization
+          in: header
+          description: Basic authorization credentials to authenticate to CommerceHub
+            component microservices.
+          required: true
+          schema:
+            type: string
+        - name: Client-Request-Id
+          in: header
+          description: A client-generated ID for request tracking and signature creation,
+            unique per request. This is also used for idempotency control.
+            Recommended 128-bit UUID format.
+          required: true
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          description: The content type like application/xml or application/json.
+          required: true
+          schema:
+            type: string
+            enum:
+              - application/json
+              - application/xml
+            default: application/xml
+        - name: Timestamp
+          in: header
+          description: Epoch timestamp in milliseconds in the request from a client system.
+            Used for authorization header generation and time limit (5 minutes).
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: X-AuthorizationId
+          in: header
+          description: Populated by APIGEE. MID or StoreId value.
+          required: false
+          schema:
+            type: string
+        - name: X-AuthorizationType
+          in: header
+          description: Populated by APIGEE. Type of AuthorizationId (MID or StoreId).
+          required: false
+          schema:
+            type: string
+        - name: X-B3-SpanId
+          in: header
+          description: 64 lower-hex encoded bits (absent on root span).
+          required: true
+          schema:
+            type: string
+        - name: X-B3-TraceId
+          in: header
+          description: APIGEE injected random UUID (APITraceId).
+          required: true
+          schema:
+            type: string
+        - name: X-Developer-Email
+          in: header
+          description: Populated by APIGEE, Developer-Email  injected by APIGEE.
+          required: true
+          schema:
+            type: string
+        - name: X-Forwarded-For
+          in: header
+          description: Identifies the originating IP address of a client.
+          required: true
+          schema:
+            type: string
+        - name: X-Originator
+          in: header
+          description: "Populated by APIGEE, the value from Developer App Custom Attribute:
+            X-Originator."
+          required: true
+          schema:
+            type: string
+        - name: X-System-Entry-Time
+          in: header
+          description: Populated by APIGEE. Epoch timestamp in milliseconds for elapsed
+            time.
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/NexoRequest"
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NexoRequest"
+        description: Nexo Request.
+        required: true
+      responses:
+        "200":
+          description: Nexo Response.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NexoResponse"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/NexoResponse"
+        "201":
+          description: Created
+        "401":
+          description: Unauthorized
+        "403":
+          description: Forbidden
+        "404":
+          description: Not Found
+servers:
+  - url: //localhost:8080/
+components:
+  schemas:
+    AcceptedAuthorizationResponse:
+      type: object
+      properties:
+        AuthstnRspn:
+          $ref: "#/components/schemas/AuthorizationResponse"
+        Hdr:
+          $ref: "#/components/schemas/Header_in_response_"
+      title: AcceptedAuthorizationResponse
+      description: Acceptor Authorization Response. Sent by the acquirer (or its agent) to
+        an acceptor (or its agent), to return the result of the validation by
+        issuer about the payment transaction.
+    AcceptorAuthorizationRequest:
+      type: object
+      properties:
+        AuthstnReq:
+          $ref: "#/components/schemas/AuthorizationRequest"
+        Hdr:
+          $ref: "#/components/schemas/Header_in_request_"
+      title: AcceptorAuthorizationRequest
+      description: Acceptor Authorization Request. An authorization is used in a card
+        payment to request the approval of the transaction.Sent by an acceptor
+        (or its agent) to the acquirer (or its agent), to check with the issuer
+        (or its agent) that the account associated to the card has the resources
+        to fund the payment. Includes validation of the card data and any
+        additional transaction data provided.
+    AcceptorCancellationAdvice:
+      type: object
+      properties:
+        CxlAdvc:
+          $ref: "#/components/schemas/CancellationAdvice"
+        Hdr:
+          $ref: "#/components/schemas/Header_in_request_"
+      title: AcceptorCancellationAdvice
+      description: Acceptor Cancellation Advice. Used by an Acceptor to inform the Acquirer
+        that a cancellation has been completed.
+    AcceptorCancellationAdviceResponse:
+      type: object
+      properties:
+        CxlAdvcRspn:
+          $ref: "#/components/schemas/CancellationAdviceResponse"
+        Hdr:
+          $ref: "#/components/schemas/Header_in_response_"
+      title: AcceptorCancellationAdviceResponse
+      description: Acceptor Cancellation Advice Response. Sent by the acquirer (or its
+        agent) to acknowledge the acceptor (or its agent) about the notification
+        of the payment cancellation.
+    AcceptorRejection:
+      type: object
+      properties:
+        Hdr:
+          $ref: "#/components/schemas/Header_in_response_"
+        Rjct:
+          type: array
+          xml:
+            name: Rjct
+            attribute: false
+            wrapped: false
+          items:
+            $ref: "#/components/schemas/Reject"
+      title: AcceptorRejection
+      description: Acceptor Rejection. Sent by the acquirer (or its agent) to reject a
+        request or advice sent by an acceptor (or its agent), and indicates that
+        the received message could not be processed.
+    Acquirer:
+      type: object
+      properties:
+        Id:
+          $ref: "#/components/schemas/AcquirerIdentification_in_request_"
+        ParamsVrsn:
+          type: string
+          xml:
+            name: ParamsVrsn
+            attribute: false
+            wrapped: false
+          description: Parameters Version.
+      title: Acquirer
+      description: Acquirer. An Acquirer acquires card payment data from an Acceptor and
+        forwards the data to the relevant Card Issuer.
+    Authentication:
+      type: object
+      properties:
+        AuthntcnMtd:
+          type: string
+          description: "Authentication Method. Method used to authenticate the cardholder:"
+        AuthntcnVal:
+          type: string
+          description: Authentication Value.
+      title: Authentication
+      description: Authentication. Method and data used or intended to be used for this
+        transaction to authenticate the owner of the card.
+    AuthorizationEntity:
+      type: object
+      properties:
+        Tp:
+          type: string
+          xml:
+            name: Tp
+            attribute: false
+            wrapped: false
+          description: Type. Type of party that has delivered or declined the card payment
+            authorization.
+      title: AuthorizationEntity
+      description: Authorization Entity. A party that has delivered or declined the card
+        payment authorization.
+    AuthorizationRequest:
+      type: object
+      properties:
+        Bal:
+          $ref: "#/components/schemas/Balance"
+        Cntxt:
+          $ref: "#/components/schemas/Context"
+        Envt:
+          $ref: "#/components/schemas/Environment_in_request_"
+        Tx:
+          $ref: "#/components/schemas/Transaction_in_request_"
+      title: AuthorizationRequest
+      description: Authorization Request. An authorization is used in a card payment to
+        request the approval of the transaction.
+    AuthorizationResponse:
+      type: object
+      properties:
+        Envt:
+          $ref: "#/components/schemas/Environment_in_response_"
+        Tx:
+          $ref: "#/components/schemas/Transaction_in_response_"
+        TxRspn:
+          $ref: "#/components/schemas/TransactionResponse"
+      title: AuthorizationResponse
+      description: Authorization Response.
+    AuthorizationResult:
+      type: object
+      properties:
+        AuthstnCd:
+          type: string
+          xml:
+            name: AuthstnCd
+            attribute: false
+            wrapped: false
+          description: Authorization Code. Value assigned by the authorizing party.
+        AuthstnNtty:
+          $ref: "#/components/schemas/AuthorizationEntity"
+        CmpltnReqrd:
+          type: string
+          xml:
+            name: CmpltnReqrd
+            attribute: false
+            wrapped: false
+          description: Completion Required. Indicates whether the acquirer requires a
+            further exchange completion after the completion of the transaction.
+        RspnToAuthstn:
+          $ref: "#/components/schemas/ResponseToAuthorization"
+      title: AuthorizationResult
+      description: Authorization Result. Outcome of the authorization.
+    Balance:
+      type: object
+      properties:
+        Amt:
+          type: string
+          xml:
+            name: Amt
+            attribute: false
+            wrapped: false
+          description: Amount.
+        Ccy:
+          type: string
+          xml:
+            name: Ccy
+            attribute: false
+            wrapped: false
+          description: Currency.
+      title: Balance
+      description: Balance.
+    CancellationAdvice:
+      type: object
+      properties:
+        Bal:
+          $ref: "#/components/schemas/Balance"
+        Cntxt:
+          $ref: "#/components/schemas/Context"
+        Envt:
+          $ref: "#/components/schemas/Environment_in_request_"
+        Tx:
+          $ref: "#/components/schemas/Transaction_in_request_"
+      title: CancellationAdvice
+      description: Cancellation Advice. Used by an Acceptor to inform the Acquirer that a
+        cancellation has been completed.
+    CancellationAdviceResponse:
+      type: object
+      properties:
+        Envt:
+          $ref: "#/components/schemas/Environment_in_response_"
+        Tx:
+          $ref: "#/components/schemas/Transaction_in_response_"
+        TxRspn:
+          $ref: "#/components/schemas/TransactionResponse"
+      title: CancellationAdviceResponse
+      description: Cancellation Advice Response.
+    CardHolder:
+      type: object
+      properties:
+        Authntcn:
+          $ref: "#/components/schemas/Authentication"
+        Lang:
+          type: string
+          description: Advises the Acquirer of the cardholder language.
+        TxVrfctnRslt:
+          $ref: "#/components/schemas/TaxVerificationResult"
+      title: CardHolder
+      description: Card Holder. A person presenting a Card or card information to a
+        Merchant for the purchase of goods and services.
+    ContentEncryptionAlgorithm:
+      type: object
+      properties:
+        Algo:
+          type: string
+          xml:
+            name: Algo
+            attribute: false
+            wrapped: false
+          description: Algorithm. Identification of the digest algorithm.
+      title: ContentEncryptionAlgorithm
+      description: Content Encryption Algorithm.
+    Context:
+      type: object
+      properties:
+        PmtCntxt:
+          $ref: "#/components/schemas/PaymentContext"
+      title: Context
+      description: Context. Contains nested contexts associated to a card payment
+        transaction.
+    EncryptedContent:
+      type: object
+      properties:
+        CnttNcrptnAlgo:
+          $ref: "#/components/schemas/ContentEncryptionAlgorithm"
+        CnttTp:
+          type: string
+          xml:
+            name: CnttTp
+            attribute: false
+            wrapped: false
+          description: Content Type. Type of data protection.
+        NcrptdData:
+          type: string
+          xml:
+            name: NcrptdData
+            attribute: false
+            wrapped: false
+          description: Encrypted Data.
+      title: EncryptedContent
+      description: Encrypted Content.
+    EnvelopedData:
+      type: object
+      properties:
+        NcrptdCntt:
+          $ref: "#/components/schemas/EncryptedContent"
+        Rcpt:
+          $ref: "#/components/schemas/Recipient"
+      title: EnvelopedData
+      description: Enveloped Data.
+    KEK:
+      type: object
+      properties:
+        KEKId:
+          $ref: "#/components/schemas/KEKIdentification"
+        NcrptdKey:
+          type: string
+          xml:
+            name: NcrptdKey
+            attribute: false
+            wrapped: false
+          description: Encrypted Key.
+      title: KEK
+      description: Key Encryption Key (KEK).
+    KEKIdentification:
+      type: object
+      properties:
+        DerivtnId:
+          type: string
+          xml:
+            name: DerivtnId
+            attribute: false
+            wrapped: false
+          description: Derivation Identification. Identification used for derivation of a
+            unique key from a master key provided for the data protection.
+        KeyId:
+          type: string
+          xml:
+            name: KeyId
+            attribute: false
+            wrapped: false
+          description: Key Identification.
+        KeyVrsn:
+          type: string
+          xml:
+            name: KeyVrsn
+            attribute: false
+            wrapped: false
+          description: Key Version. Version of the cryptographic key.
+      title: KEKIdentification
+      description: Key Encryption Key (KEK) Identification.
+    LocationAndContact:
+      type: object
+      properties:
+        AddtlCtctInf:
+          type: string
+          xml:
+            name: AddtlCtctInf
+            attribute: false
+            wrapped: false
+          description: Additional Contact Information. Additional merchant data required by
+            a card scheme.
+        PstlAdr:
+          $ref: "#/components/schemas/PostalAddress"
+      title: LocationAndContact
+      description: Location and Contact. Location and contact information of the merchant
+        performing the transaction.
+    Merchant:
+      type: object
+      properties:
+        CmonNm:
+          type: string
+          xml:
+            name: CmonNm
+            attribute: false
+            wrapped: false
+          description: Common Name. Name of the merchant as appearing on the receipt.
+        Id:
+          $ref: "#/components/schemas/MerchantIdentification_in_request_"
+        LctnAndCtct:
+          $ref: "#/components/schemas/LocationAndContact"
+      title: Merchant
+      description: Merchant. Merchant performing the card payment transaction, as a party
+        providing goods and/or services at a sales location (physical or
+        virtual). The Merchant signs an acquiring agreement with an Acquirer.
+        The Merchant can perform the role of Acceptor or delegate it to another
+        party.
+    NexoRequest:
+      type: object
+      properties:
+        AccptrAuthstnReq:
+          $ref: "#/components/schemas/AcceptorAuthorizationRequest"
+        AccptrCxlAdvc:
+          $ref: "#/components/schemas/AcceptorCancellationAdvice"
+      title: NexoRequest
+      xml:
+        name: root
+        attribute: false
+        wrapped: false
+      description: Nexo Request. Supports a subset of CAPE Card Payments messages in the
+        context of the acceptor-to-acquirer transactions.
+    NexoResponse:
+      type: object
+      properties:
+        AccptrAuthstnRspn:
+          $ref: "#/components/schemas/AcceptedAuthorizationResponse"
+        AccptrCxlAdvcRspn:
+          $ref: "#/components/schemas/AcceptorCancellationAdviceResponse"
+        AccptrRjctn:
+          $ref: "#/components/schemas/AcceptorRejection"
+      title: NexoResponse
+      xml:
+        name: root
+        attribute: false
+        wrapped: false
+      description: Nexo Response. Supports a subset of CAPE Card Payments messages in the
+        context of the acceptor-to-acquirer transactions.
+    POICapabilities:
+      type: object
+      properties:
+        ApprvlCdLngth:
+          type: integer
+          format: int32
+          xml:
+            name: ApprvlCdLngth
+            attribute: false
+            wrapped: false
+          description: Approval Code Length. Maximum number of characters of the approval
+            code supported by the POI.
+        CardCaptrCpbl:
+          type: boolean
+          xml:
+            name: CardCaptrCpbl
+            attribute: false
+            wrapped: false
+          description: Card Capture Capable. True if the POI is able to capture card.
+        CardRdngCpblties:
+          type: array
+          xml:
+            name: CardRdngCpblties
+            attribute: false
+            wrapped: false
+          description: Card Reading Capabilities. Card reading capabilities of the POI
+            (Point Of Interaction) performing the transaction.
+          items:
+            type: string
+        CrdhldrVrfctnCpblties:
+          type: array
+          xml:
+            name: CrdhldrVrfctnCpblties
+            attribute: false
+            wrapped: false
+          description: Cardholder Verification Capabilities. Cardholder verification
+            capabilities of the POI (Point Of Interaction) performing the
+            transaction.
+          items:
+            type: string
+        MxScrptLngth:
+          type: integer
+          format: int32
+          xml:
+            name: MxScrptLngth
+            attribute: false
+            wrapped: false
+          description: Max Script Length. Maximum data length in bytes that a card issuer
+            can return to the ICC at the terminal.
+        OnLineCpblties:
+          type: string
+          xml:
+            name: OnLineCpblties
+            attribute: false
+            wrapped: false
+          description: Online Capabilities. Online and offline capabilities of the POI
+            (Point Of Interaction).
+        PINLngthCpblties:
+          type: string
+          xml:
+            name: PINLngthCpblties
+            attribute: false
+            wrapped: false
+          description: PIN Length Capabilities. Maximum number of digits the POI is able to
+            accept when the cardholder enters PIN.
+      title: POICapabilities
+      description: POI Capabilities. Capabilities of the Point of Interaction (POI)
+        performing the transaction.
+    POIComponent:
+      type: object
+      properties:
+        Id:
+          $ref: "#/components/schemas/POIComponentIdentification"
+        Tp:
+          type: string
+          xml:
+            name: Tp
+            attribute: false
+            wrapped: false
+          description: Type.
+      title: POIComponent
+      description: POI Component. Component of a POI system or POI terminal (Point of
+        Interaction).
+    POIComponentIdentification:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of the Point Of Interaction (POI)
+            component.
+        PrvdrId:
+          type: string
+          xml:
+            name: PrvdrId
+            attribute: false
+            wrapped: false
+          description: Provider Identification.
+        SrlNb:
+          type: string
+          xml:
+            name: SrlNb
+            attribute: false
+            wrapped: false
+          description: Serial Number.
+      title: POIComponentIdentification
+      description: POI Component Identification. Identification of the Point Of Interaction
+        (POI) component.
+    PaymentContext:
+      type: object
+      properties:
+        AttndncCntxt:
+          type: string
+          xml:
+            name: AttndncCntxt
+            attribute: false
+            wrapped: false
+          description: Attendance Context. Human attendance at the POI (Point Of
+            Interaction) location during the transaction.
+        CardDataNtryMd:
+          type: string
+          xml:
+            name: CardDataNtryMd
+            attribute: false
+            wrapped: false
+          description: Card Data Entry Mode. Entry mode of the card data.
+        CardPres:
+          type: boolean
+          xml:
+            name: CardPres
+            attribute: false
+            wrapped: false
+          description: Card Present. Indicates whether the transaction has been initiated
+            by a card physically present or not.
+        CrdhldrPres:
+          type: boolean
+          xml:
+            name: CrdhldrPres
+            attribute: false
+            wrapped: false
+          description: Cardholder Present. Indicates whether the transaction has been
+            initiated in presence of the cardholder or not.
+        FllbckInd:
+          type: string
+          xml:
+            name: FllbckInd
+            attribute: false
+            wrapped: false
+          description: Fallback Indicator. Indicator of a card entry mode fallback.
+        SpprtdOptn:
+          type: string
+          xml:
+            name: SpprtdOptn
+            attribute: false
+            wrapped: false
+          description: Supported Option. Payment options the card acceptor can support.
+      title: PaymentContext
+      description: Payment Context. Identifies the elements of the sales environment for
+        payment.
+    PointOfInteraction:
+      type: object
+      properties:
+        Cmpnt:
+          type: array
+          xml:
+            name: Cmpnt
+            attribute: false
+            wrapped: false
+          items:
+            $ref: "#/components/schemas/POIComponent"
+        Cpblties:
+          $ref: "#/components/schemas/POICapabilities"
+        GrpId:
+          type: string
+          xml:
+            name: GrpId
+            attribute: false
+            wrapped: false
+          description: Group Identification. Identifier assigned by the merchant
+            identifying a set of POI (Point Of Interaction) terminals performing
+            some categories of transactions.
+        Id:
+          $ref: "#/components/schemas/POIIdentification_in_request_"
+      title: PointOfInteraction
+      description: Point of Interaction. Point of Interaction (POI) performing the
+        transaction. It defines the entry point of a card into a payment system
+        to accept payment and loyalty cards at a sales location.
+    PostalAddress:
+      type: object
+      properties:
+        Ctry:
+          type: string
+          xml:
+            name: Ctry
+            attribute: false
+            wrapped: false
+          description: Country. Nation with its own government, occupying a particular
+            territory.
+        CtrySubDvsn:
+          type: string
+          xml:
+            name: CtrySubDvsn
+            attribute: false
+            wrapped: false
+          description: Country Sub-division. Identifies a subdivision of a country, for
+            instance state, region, county.
+        PstCd:
+          type: string
+          xml:
+            name: PstCd
+            attribute: false
+            wrapped: false
+          description: Post Code. Identifier consisting of a group of letters and/or
+            numbers that is added to a postal address to assist the sorting of
+            mail.
+        StrtNm:
+          type: string
+          xml:
+            name: StrtNm
+            attribute: false
+            wrapped: false
+          description: Street Name. Name of a street or thoroughfare.
+        TwnNm:
+          type: string
+          xml:
+            name: TwnNm
+            attribute: false
+            wrapped: false
+          description: Town Name. Name of a built-up area, with defined boundaries, and a
+            local government.
+      title: PostalAddress
+      description: Postal Address.
+    ProtectedCardData:
+      type: object
+      properties:
+        CnttTp:
+          type: string
+          xml:
+            name: CnttTp
+            attribute: false
+            wrapped: false
+          description: Content Type. Type of data protection.
+        EnvlpdData:
+          $ref: "#/components/schemas/EnvelopedData"
+      title: ProtectedCardData
+      description: Protected Card Data. Sensitive data of the card, encrypted with
+        cryptographic key.
+    Recipient:
+      type: object
+      properties:
+        KEK:
+          $ref: "#/components/schemas/KEK"
+      title: Recipient
+      description: Recipient. Recipient of encrypted content.
+    RecipientParty:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. The value of this identifier is bilaterally agreed
+            between Initiating Party and Recipient Party.
+        Tp:
+          type: string
+          xml:
+            name: Tp
+            attribute: false
+            wrapped: false
+          description: Type. Indicates the type of Recipient Party.
+      title: RecipientParty
+      description: Recipient Party. Information used to identify the recipient of an
+        exchange.
+    Reject:
+      type: object
+      properties:
+        AddtlInf:
+          type: string
+          xml:
+            name: AddtlInf
+            attribute: false
+            wrapped: false
+          description: Additional Information. Additional information related to the reject
+            of the exchange.
+        MsgInErr:
+          type: string
+          xml:
+            name: MsgInErr
+            attribute: false
+            wrapped: false
+          description: Message in Error. Original request that caused the recipient party
+            to reject it.
+        RjctRsn:
+          type: string
+          xml:
+            name: RjctRsn
+            attribute: false
+            wrapped: false
+          description: Reject Reason. Reject reason of the request or the advice.
+      title: Reject
+      description: Reject. Information related to the reject.
+    ResponseToAuthorization:
+      type: object
+      properties:
+        Rspn:
+          type: string
+          xml:
+            name: Rspn
+            attribute: false
+            wrapped: false
+          description: Response. Result of the transaction, like whether it was approved.
+        RspnRsn:
+          type: string
+          xml:
+            name: RspnRsn
+            attribute: false
+            wrapped: false
+          description: Response Reason. Detailed result of the transaction.
+      title: ResponseToAuthorization
+      description: Response to Authorization. Response to an authorisation request.
+    TaxVerificationResult:
+      type: object
+      properties:
+        Mtd:
+          type: string
+          description: Method. Verification method.
+        Rslt:
+          type: string
+          description: Result. Verification Result.
+      title: TaxVerificationResult
+      description: Tax Verification Result.
+    TransactionResponse:
+      type: object
+      properties:
+        AuthstnRslt:
+          $ref: "#/components/schemas/AuthorizationResult"
+        Bal:
+          $ref: "#/components/schemas/Balance"
+      title: TransactionResponse
+      description: Transaction Response.
+    AcquirerIdentification_in_request_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of the Acquirer or the Intermediary
+            Agent determined by the application from the card and other data
+            used in this transaction.
+      title: AcquirerIdentification (in request)
+      description: Acquirer Identification.
+    AcquirerIdentification_in_response_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of the acquirer.
+      title: AcquirerIdentification (in response)
+      description: Acquirer Identification.
+    Card_in_request_:
+      type: object
+      properties:
+        CardBrnd:
+          type: string
+          xml:
+            name: CardBrnd
+            attribute: false
+            wrapped: false
+          description: Brand name of the card or the scheme.
+        CardCcyCd:
+          type: string
+          xml:
+            name: CardCcyCd
+            attribute: false
+            wrapped: false
+          description: Card Currency Code. Currency code of the card issuer.
+        CardCtryCd:
+          type: string
+          xml:
+            name: CardCtryCd
+            attribute: false
+            wrapped: false
+          description: Card Country Code. Indicates the country of the card issuer.
+        PmtAcctRef:
+          type: string
+          xml:
+            name: PmtAcctRef
+            attribute: false
+            wrapped: false
+          description: Payment Account Reference. Unique reference to the card, used by
+            both merchants and acquirers to link tokenized and non-tokenized
+            transactions associated to the same underlying card.
+        PrtctdCardData:
+          $ref: "#/components/schemas/ProtectedCardData"
+      title: Card (in request)
+      description: Card. A physical or virtual device to enable a payment and to identify a
+        Cardholder account.
+    Card_in_response_:
+      type: object
+      properties:
+        PmtAcctRef:
+          type: string
+          xml:
+            name: PmtAcctRef
+            attribute: false
+            wrapped: false
+          description: Payment Account Reference. Unique reference to the card, used by
+            both merchants and acquirers to link tokenized and non-tokenized
+            transactions associated to the same underlying card.
+      title: Card (in response)
+      description: Card. A physical or virtual device to enable a payment and to identify a
+        Cardholder account.
+    Environment_in_request_:
+      type: object
+      properties:
+        Acqrr:
+          $ref: "#/components/schemas/Acquirer"
+        Card:
+          $ref: "#/components/schemas/Card_in_request_"
+        Crdhldr:
+          $ref: "#/components/schemas/CardHolder"
+        Mrchnt:
+          $ref: "#/components/schemas/Merchant"
+        POI:
+          $ref: "#/components/schemas/PointOfInteraction"
+      title: Environment (in request)
+      description: Environment. Environment of the transaction. Contains information
+        related to the main actors involved in or impacted by a payment
+        transaction.
+    Environment_in_response_:
+      type: object
+      properties:
+        AcqrrId:
+          $ref: "#/components/schemas/AcquirerIdentification_in_response_"
+        Card:
+          $ref: "#/components/schemas/Card_in_response_"
+        MrchntId:
+          $ref: "#/components/schemas/MerchantIdentification_in_response_"
+        POIId:
+          $ref: "#/components/schemas/POIIdentification_in_response_"
+      title: Environment (in response)
+      description: Environment. Contains information related to the main actors involved in
+        or impacted by a payment transaction.
+    Header_in_request_:
+      type: object
+      properties:
+        CreDtTm:
+          type: string
+          xml:
+            name: CreDtTm
+            attribute: false
+            wrapped: false
+          description: Creation Date Time. Date and time of the creation of the message.
+        InitgPty:
+          $ref: "#/components/schemas/InitiatingParty_in_request_"
+        MsgFctn:
+          type: string
+          xml:
+            name: MsgFctn
+            attribute: false
+            wrapped: false
+          description: Message Function. Identifies the type of process related to the
+            message.
+        PrtcolVrsn:
+          type: string
+          xml:
+            name: PrtcolVrsn
+            attribute: false
+            wrapped: false
+          description: Protocol Version. Identifies the version of the protocol used in the
+            exchange.
+        RcptPty:
+          $ref: "#/components/schemas/RecipientParty"
+        Tracblt:
+          $ref: "#/components/schemas/Traceability_in_request_"
+        XchgId:
+          type: string
+          xml:
+            name: XchgId
+            attribute: false
+            wrapped: false
+          description: Exchange Identification. Provides unique identification of the
+            exchange of messages (request/response) for a specific service.
+      title: Header (in request)
+      description: Header. Conveys information related to the protocol management on a
+        segment of the path from the Acceptor to the Acquirer.
+    Header_in_response_:
+      type: object
+      properties:
+        CreDtTm:
+          type: string
+          xml:
+            name: CreDtTm
+            attribute: false
+            wrapped: false
+          description: Creation Date Time. Date and time of the creation of the message.
+        InitgPty:
+          $ref: "#/components/schemas/InitiatingParty_in_response_"
+        MsgFctn:
+          type: string
+          xml:
+            name: MsgFctn
+            attribute: false
+            wrapped: false
+          description: Message Function. Identifies the type of process related to the
+            message.
+        PrtcolVrsn:
+          type: string
+          xml:
+            name: PrtcolVrsn
+            attribute: false
+            wrapped: false
+          description: Protocol Version. Identifies the version of the protocol used in the
+            exchange.
+        Tracblt:
+          type: array
+          xml:
+            name: Tracblt
+            attribute: false
+            wrapped: false
+          items:
+            $ref: "#/components/schemas/Traceability_in_response_"
+        XchgId:
+          type: string
+          xml:
+            name: XchgId
+            attribute: false
+            wrapped: false
+          description: Exchange Identification. Provides unique identification of the
+            exchange of messages (request/response) for a specific service.
+      title: Header (in response)
+      description: Header. Conveys information related to the protocol management on a
+        segment of the path from the Acceptor to the Acquirer.
+    InitiatingParty_in_request_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. The value of this identifier is bilaterally agreed
+            between Initiating Party and Recipient Party.
+        Tp:
+          type: string
+          xml:
+            name: Tp
+            attribute: false
+            wrapped: false
+          description: Type. Indicates the type of Initiating Party.
+      title: InitiatingParty (in request)
+      description: Initiating Party. Information used to identify the initiator of an
+        exchange.
+    InitiatingParty_in_response_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. The value of this identifier is bilaterally agreed
+            between Initiating Party and Recipient Party.
+      title: InitiatingParty (in response)
+      description: Initiating Party. Information used to identify the initiator of an
+        exchange.
+    MerchantIdentification_in_request_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of the merchant.
+      title: MerchantIdentification (in request)
+      description: Merchant Identification.
+    MerchantIdentification_in_response_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of the merchant.
+      title: MerchantIdentification (in response)
+      description: Merchant Identification.
+    POIIdentification_in_request_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of the Point of Interaction (POI)
+            performing the transaction.
+        ShrtNm:
+          type: string
+          xml:
+            name: ShrtNm
+            attribute: false
+            wrapped: false
+          description: Short Name. Short name of the Point of Interaction (POI) performing
+            the transaction.
+      title: POIIdentification (in request)
+      description: POI Identification. Identification of the Point of Interaction (POI)
+        performing the transaction.
+    POIIdentification_in_response_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of the Point of Interaction (POI)
+            performing the transaction.
+        ShrtNm:
+          type: string
+          xml:
+            name: ShrtNm
+            attribute: false
+            wrapped: false
+          description: Short Name. Short name of the Point of Interaction (POI) performing
+            the transaction.
+      title: POIIdentification (in response)
+      description: POI Identification. Identification of the Point of Interaction (POI)
+        performing the transaction.
+    RelayIdentification_in_request_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of a party relaying a message.
+        Tp:
+          type: string
+          xml:
+            name: Tp
+            attribute: false
+            wrapped: false
+          description: Type.
+      title: RelayIdentification (in request)
+      description: Relay Identification. Party relaying a message. This can be the
+        Acceptor, the Acquirer or any Intermediary Agent relaying a message on
+        behalf of the Acceptor or the Acquirer.
+    RelayIdentification_in_response_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            attribute: false
+            wrapped: false
+          description: Identification. Identification of a party relaying a message.
+        Tp:
+          type: string
+          xml:
+            name: Tp
+            attribute: false
+            wrapped: false
+          description: Type.
+      title: RelayIdentification (in response)
+      description: Relay Identification. Party relaying a message. This can be the
+        Acceptor, the Acquirer or any Intermediary Agent relaying a message on
+        behalf of the Acceptor or the Acquirer.
+    Traceability_in_request_:
+      type: object
+      properties:
+        RlayId:
+          $ref: "#/components/schemas/RelayIdentification_in_request_"
+        TracDtTmIn:
+          type: string
+          xml:
+            name: TracDtTmIn
+            attribute: false
+            wrapped: false
+          description: Date and time of incoming messages for relaying or processing.
+        TracDtTmOut:
+          type: string
+          xml:
+            name: TracDtTmOut
+            attribute: false
+            wrapped: false
+          description: Date and time of outgoing messages for relaying or processing.
+      title: Traceability (in request)
+      description: Traceability. Traceability provides information in regards to the
+        processing and transport time for the exchange of messages.
+    Traceability_in_response_:
+      type: object
+      properties:
+        RlayId:
+          $ref: "#/components/schemas/RelayIdentification_in_response_"
+        TracDtTmIn:
+          type: string
+          xml:
+            name: TracDtTmIn
+            attribute: false
+            wrapped: false
+          description: Date and time of incoming messages for relaying or processing.
+        TracDtTmOut:
+          type: string
+          xml:
+            name: TracDtTmOut
+            attribute: false
+            wrapped: false
+          description: Date and time of outgoing messages for relaying or processing.
+      title: Traceability (in response)
+      description: Traceability. Traceability provides information in regards to the
+        processing and transport time for the exchange of messages.
+    Transaction_in_request_:
+      type: object
+      properties:
+        CardPrgrmmApld:
+          type: string
+          xml:
+            name: CardPrgrmmApld
+            attribute: false
+            wrapped: false
+          description: Card Programme Applied. The card program selected by the cardholder
+            among the payment programs supported by the retailer and/or the
+            proposed program.
+        CstmrCnsnt:
+          type: string
+          xml:
+            name: CstmrCnsnt
+            attribute: false
+            wrapped: false
+          description: Customer Consent. This enables retailers to indicate whether the
+            consent of the customer was explicitly obtained for a given service
+            instead of being implicitly derived.
+        InitrTxId:
+          type: string
+          xml:
+            name: InitrTxId
+            attribute: false
+            wrapped: false
+          description: Initiator Transaction Identification.
+        MrchntCtgyCd:
+          type: string
+          xml:
+            name: MrchntCtgyCd
+            attribute: false
+            wrapped: false
+          description: Merchant Category Code. Category code related to the type of
+            services or goods the merchant provides for the transaction.
+        RcncltnId:
+          type: string
+          xml:
+            name: RcncltnId
+            attribute: false
+            wrapped: false
+          description: Reconciliation Identification.
+        TxCaptr:
+          type: string
+          xml:
+            name: TxCaptr
+            attribute: false
+            wrapped: false
+          description: Transaction Capture. Flag indicating whether the transaction data
+            must be captured or not in addition to the message process.
+        TxDtls:
+          $ref: "#/components/schemas/TransactionDetails_in_request_"
+        TxId:
+          $ref: "#/components/schemas/TransactionIdentification_in_request_"
+        TxTp:
+          type: string
+          xml:
+            name: TxTp
+            attribute: false
+            wrapped: false
+          description: Transaction Type.
+      title: Transaction (in request)
+      description: Transaction. Contains the transaction specific data.
+    Transaction_in_response_:
+      type: object
+      properties:
+        InitrTxId:
+          type: string
+          xml:
+            name: InitrTxId
+            attribute: false
+            wrapped: false
+          description: Initiator Transaction Identification.
+        RcncltnId:
+          type: string
+          xml:
+            name: RcncltnId
+            attribute: false
+            wrapped: false
+          description: Transaction Identification.
+        RcptTxId:
+          type: string
+          xml:
+            name: RcptTxId
+            attribute: false
+            wrapped: false
+          description: Recipipent Transaction Identification.
+        Rspn:
+          type: string
+          xml:
+            name: Rspn
+            attribute: false
+            wrapped: false
+          description: Response.
+        TxDtls:
+          $ref: "#/components/schemas/TransactionDetails_in_response_"
+        TxId:
+          $ref: "#/components/schemas/TransactionIdentification_in_response_"
+      title: Transaction (in response)
+      description: Transaction. Contains the transaction specific data.
+    TransactionDetails_in_request_:
+      type: object
+      properties:
+        AmtQlfr:
+          type: string
+          xml:
+            name: AmtQlfr
+            attribute: false
+            wrapped: false
+          description: Amount Qualifier. Qualifies the amount associated with the
+            transaction.
+        Ccy:
+          type: string
+          xml:
+            name: Ccy
+            attribute: false
+            wrapped: false
+          description: Currency. Currency associated with the transaction.
+        Grtty:
+          type: string
+          xml:
+            name: Grtty
+            attribute: false
+            wrapped: false
+          description: Gratuity. Gratuity amount.
+        ICCRltdData:
+          type: string
+          xml:
+            name: ICCRltdData
+            attribute: false
+            wrapped: false
+          description: ICC Related Data. Data related to an integrated circuit card
+            application.
+        TtlAmt:
+          type: string
+          xml:
+            name: TtlAmt
+            attribute: false
+            wrapped: false
+          description: Total Amount. Total amount of the transaction.
+      title: TransactionDetails (in request)
+      description: Transaction Details.
+    TransactionDetails_in_response_:
+      type: object
+      properties:
+        Ccy:
+          type: string
+          xml:
+            name: Ccy
+            attribute: false
+            wrapped: false
+          description: Currency. Currency associated with the transaction.
+        ICCRltdData:
+          type: string
+          xml:
+            name: ICCRltdData
+            attribute: false
+            wrapped: false
+          description: ICC Related Data. Data related to an integrated circuit card
+            application.
+        TtlAmt:
+          type: string
+          xml:
+            name: TtlAmt
+            attribute: false
+            wrapped: false
+          description: Total Amount. Total amount of the transaction.
+      title: TransactionDetails (in response)
+      description: Transaction Details.
+    TransactionIdentification_in_request_:
+      type: object
+      properties:
+        TxDtTm:
+          type: string
+          xml:
+            name: TxDtTm
+            attribute: false
+            wrapped: false
+          description: Transaction Date Time.
+        TxRef:
+          type: string
+          xml:
+            name: TxRef
+            attribute: false
+            wrapped: false
+          description: Transaction Reference.
+      title: TransactionIdentification (in request)
+      description: Transaction Identification. Identification of the transaction assigned
+        by the POI (Point Of Interaction).
+    TransactionIdentification_in_response_:
+      type: object
+      properties:
+        TxDtTm:
+          type: string
+          xml:
+            name: TxDtTm
+            attribute: false
+            wrapped: false
+          description: Transaction Date Time.
+        TxRef:
+          type: string
+          xml:
+            name: TxRef
+            attribute: false
+            wrapped: false
+          description: Transaction Reference.
+      title: TransactionIdentification (in response)
+      description: Transaction Identification. Identification of the transaction assigned
+        by the POI (Point Of Interaction).
