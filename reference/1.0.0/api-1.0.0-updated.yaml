@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.0.2
 info:
   description: Supports a subset of the Nexo payment standards
   version: v32
@@ -8,6 +8,7 @@ tags:
     description: Commerce Hub Nexo Translator Controller
 paths:
   /transaction/v32:
+    x-model-version: 1.0
     post:
       tags:
         - commerce-hub-nexo-translator-controller
@@ -117,12 +118,22 @@ paths:
             format: int64
       requestBody:
         content:
-          application/xml:
-            schema:
-              $ref: "#/components/schemas/NexoRequest"
+          # application/xml:
+          #   schema:
+          #     $ref: "#/components/schemas/NexoRequest"
           application/json:
             schema:
               $ref: "#/components/schemas/NexoRequest"
+            examples:
+              Auth-MSR: {$ref: '#/components/examples/AuthMSRRequest'}
+              Sale-MSR: {$ref: '#/components/examples/SaleMSRRequest'}
+              Auth-EMV: {$ref: '#/components/examples/AuthEMVRequest'}
+              VOID: {$ref: '#/components/examples/VoidRequest'}
+              Refund: {$ref: '#/components/examples/RefundRequest'}
+              Sale-EMV: {$ref: '#/components/examples/SaleEMVRequest'}
+              Partial-Sale-MSR: {$ref: '#/components/examples/PartialSaleMSRRequest'}
+              Partial-Auth-MSR: {$ref: '#/components/examples/PartialAuthMSRRequest'}
+                
         description: Nexo Request.
         required: true
       responses:
@@ -137,6 +148,19 @@ paths:
                 $ref: "#/components/schemas/NexoResponse"
         "201":
           description: Created
+          content:
+            application/json:
+              schema: {$ref: '#/components/schemas/NexoResponse'}
+              examples:
+                Auth-MSR: {$ref: '#/components/examples/AuthMSRResponse'}
+                Sale-MSR: {$ref: '#/components/examples/SaleMSResponse'}
+                Auth-EMV: {$ref: '#/components/examples/AuthEMVResponse'}
+                VOID: {$ref: '#/components/examples/VoidResponse'}
+                Refund: {$ref: '#/components/examples/RefundResponse'}
+                Sale-EMV: {$ref: '#/components/examples/SaleEMVResponse'}
+                Partial-Sale-MSR: {$ref: '#/components/examples/PartialSaleMSRResponse'}
+                Partial-Auth-MSR: {$ref: '#/components/examples/PartialAuthMSRResponse'}
+
         "401":
           description: Unauthorized
         "403":
@@ -514,6 +538,60 @@ components:
         wrapped: false
       description: Nexo Response. Supports a subset of CAPE Card Payments messages in the
         context of the acceptor-to-acquirer transactions.
+    
+
+    # AuthMSRResponse:
+    #   value:
+    #     AccptrAuthstnRspn:
+    #       Hdr:
+    #         MsgFctn: AUTP
+    #         PrtcolVrsn: '6.0'
+    #         XchgId: '305'
+    #         CreDtTm: '2022-02-18T18:12:33.856'
+    #         InitgPty:
+    #           Id: '19191919'
+    #         Tracblt:
+    #           - RlayId:
+    #               Id: FD-IPG
+    #               Tp: ITAG
+    #             TracDtTmIn: '2022-02-18T18:12:33.856'
+    #             TracDtTmOut: '2022-02-18T18:12:33.856'
+    #       AuthstnRspn:
+    #         Envt:
+    #           AcqrrId:
+    #             Id: '000000000001'
+    #           MrchntId:
+    #             Id: '100009000000035'
+    #           POIId:
+    #             Id: EC999864
+    #           Card:
+    #             PmtAcctRef: '183760678091004'
+    #         TxRspn:
+    #           AuthstnRslt:
+    #             AuthstnNtty:
+    #               Tp: CISS
+    #             AuthstnCd: OK8056
+    #             CmpltnReqrd: 'true'
+    #             RspnToAuthstn:
+    #               Rspn: PART
+    #               RspnRsn: 523:Approved for Partial Amount
+    #           Bal: {}
+    #         Tx:
+    #           TxId:
+    #             TxDtTm: '2021-11-15T15:14:54.356+00:00'
+    #             TxRef: '146040'
+    #           RcncltnId: '1'
+    #           InitrTxId: 5D6ET2PS8JB28
+    #           RcptTxId: 8d820ef6c93e407b87711d705e6c1345
+    #           TxDtls:
+    #             TtlAmt: '70.00'
+    #             Ccy: USD
+      # type: object
+      # properties:
+      #   AccptrAuthstnRspn:
+      #     $ref: "#/components/schemas/HdrResponse"
+      #   AccptrCxlAdvcRspn:
+      #     $ref: "#/components/schemas/AuthstnResponse"
     POICapabilities:
       type: object
       properties:
@@ -1458,3 +1536,1477 @@ components:
       title: TransactionIdentification (in response)
       description: Transaction Identification. Identification of the transaction assigned
         by the POI (Point Of Interaction).
+  examples:
+    AuthMSRRequest:
+      value:
+        AccptrAuthstnReq:
+          Hdr:
+            MsgFctn: AUTQ
+            PrtcolVrsn: '6.0'
+            XchgId: '305'
+            CreDtTm: '2021-11-15T15:14:54.356+00:00'
+            InitgPty:
+              Id: '19191919'
+          AuthstnReq:
+            Envt:
+              Acqrr:
+                Id:
+                  Id: '000000000001'
+                ParamsVrsn: '20190415154918'
+              Mrchnt:
+                Id:
+                  Id: '100009000000035'
+                CmonNm: Accor Hotel UAT 1Amsinckstrasse 38 Hamburg 20097290
+              POI:
+                Id:
+                  Id: EC999864
+                GrpId: '81206120000113'
+                Cpblties:
+                  CardRdngCpblties:
+                    - CICC
+                  CrdhldrVrfctnCpblties:
+                    - FCPN
+                  ApprvlCdLngth: '6'
+                  OnLineCpblties: SMON
+                  MsgCpblties:
+                    - Dstn: CDSP
+                      AvlblFrmt: TEXT
+                      NbOfLines: '4'
+                      LineWidth: '32'
+                      AvlblLang: en
+                    - Dstn: CRCP
+                      AvlblFrmt: TEXT
+                      NbOfLines: '4'
+                      LineWidth: '32'
+                      AvlblLang: en
+                Cmpnt:
+                  - Tp: TERM
+                    Id:
+                      PrvdrId: CLOVER
+                      Id: PAX Q80
+                      SrlNb: '21032967'
+                  - Tp: APLI
+                    Id:
+                      PrvdrId: NOVELPAY
+                      Id: NEXO ANDROID PAYMENT APPLICATION
+                    Sts:
+                      VrsnNb: 2.0.28
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: ToComplete(giveByPayCert)
+              Card:
+                PmtAcctRef: '1528719654610119'
+                PrtctdCardData:
+                  CnttTp: EVLP
+                  EnvlpdData:
+                    Rcpt:
+                      KEK:
+                        KEKId:
+                          KeyId: EMSKey
+                          KeyVrsn: '20160913'
+                          DerivtnId: //+ZmZkC
+                        KeyNcrptnAlgo:
+                          Algo: DKP9
+                        NcrptdKey: F6AAFwEU
+                    NcrptdCntt:
+                      CnttTp: dummyTrack2
+                      CnttNcrptnAlgo:
+                        Algo: dummyOnGaurd
+                      NcrptdData: 428394305788607=08525859028107653583
+                CardCtryCd: USA
+                CardCcyCd: '840'
+                CardPdctPrfl: '0003'
+                CardBrnd: V
+              Crdhldr:
+                Lang: en
+                TxVrfctnRslt:
+                  Mtd: CPSG
+                  Rslt: SUCC
+                Authntcn:
+                  AuthntcnMtd: CPSG
+                  AuthntcnVal: ''
+            Cntxt:
+              PmtCntxt:
+                CardPres: 'true'
+                CrdhldrPres: 'true'
+                TxEnvt: MERC
+                CardDataNtryMd: MGST
+                FllbckInd: FFLB
+                SpprtdOptn: PART
+              SaleCntxt: ''
+            Tx:
+              TxCaptr: 'true'
+              TxTp: CRDP
+              MrchntCtgyCd: ''
+              CstmrCnsnt: 'false'
+              CardPrgrmmApld: DCI
+              TxId:
+                TxDtTm: '2021-11-15T15:14:54.356+00:00'
+                TxRef: '146040'
+              InitrTxId: 5D6ET2PS8JB28
+              RcncltnId: '1'
+              TxDtls:
+                Ccy: USD
+                TtlAmt: '170.00'
+                AmtQlfr: ACTL
+                OnLineRsn: ICCF
+                ICCRltdData: >-
+                  9F1A020840950500000080009A031604289F2701808407A00000000410109F3704EEDC585A9F3602000382021B809F34033F0002500A4D415354455243415244DF0201099C01009F2608956FA33B281C3AD69F3303E008085F3401129F3901079F02060000000001009F03060000000000009F0607A00000000410109F3501225F2A0208404F07A00000000410109F10120114A14003020000000000000000000000FF
+          SctyTrlr:
+            CnttTp: AUTH
+            AuthntcdData:
+              Rcpt:
+                KEK:
+                  KEKId:
+                    KeyId: A2MacTestKey
+                    KeyVrsn: '2016051911'
+                    DerivtnId: EAEQERA=
+                  KeyNcrptnAlgo:
+                    Algo: DKP9
+                  NcrptdKey: m6wgAAs=
+              MACAlgo:
+                Algo: MCCS
+              NcpsltdCntt:
+                CnttTp: DATA
+              MAC: Xai7v/G7zYk=
+    SaleMSRRequest:
+      value:
+        AccptrAuthstnReq:
+          Hdr:
+            MsgFctn: FAUQ
+            PrtcolVrsn: '6.0'
+            XchgId: '-1248514697'
+            CreDtTm: '2021-09-23T09:13:45.000+02:00'
+            InitgPty:
+              Id: '19191919'
+              Tp: ACCP
+            RcptPty:
+              Id: '000000000001'
+              Tp: ACQR
+            Tracblt:
+              RlayId:
+                Id: TracePoint-5D6ET2PS8JB28
+                Tp: ACCP
+              TracDtTmIn: '2021-09-23T09:13:45.000+02:00'
+              TracDtTmOut: '2021-09-23T09:13:49.000+02:00'
+          AuthstnReq:
+            Envt:
+              Acqrr:
+                Id:
+                  Id: '000000000001'
+                ParamsVrsn: '20210923051653'
+              Mrchnt:
+                Id:
+                  Id: '100009000000035'
+                CmonNm: |-
+                  Huusken Groenten en Frui
+                                          7545XC Enschede
+                LctnAndCtct:
+                  PstlAdr:
+                    StrtNm: Zaaierstraat 11
+                    PstCd: 7545XC
+                    TwnNm: Enschede
+                    CtrySubDvsn: ''
+                    Ctry: NL
+              POI:
+                Id:
+                  Id: EC999864
+                  ShrtNm: EC999864
+                GrpId: '2338121435'
+                Cpblties:
+                  CardRdngCpblties:
+                    - PHYS
+                    - MGST
+                    - CICC
+                    - CTLS
+                    - ECTL
+                  CrdhldrVrfctnCpblties:
+                    - MNSG
+                    - FCPN
+                    - FEPN
+                    - NPIN
+                    - OTHR
+                  PINLngthCpblties: '12'
+                  ApprvlCdLngth: '6'
+                  MxScrptLngth: '20'
+                  CardCaptrCpbl: 'false'
+                  OnLineCpblties: SMON
+                  MsgCpblties:
+                    Dstn:
+                      - MDSP
+                      - MRCP
+                    AvlblFrmt: TEXT
+                    NbOfLines: '2'
+                    LineWidth: '20'
+                    AvlblLang:
+                      - nl
+                      - en
+                Cmpnt:
+                  - Tp: APLI
+                    Id:
+                      PrvdrId: CLOVER
+                      Id: NEXO PAYMENT APPLICATION
+                    Sts:
+                      VrsnNb: 1.0-416
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: my nexo Registration Number
+                  - Tp: TERM
+                    Id:
+                      PrvdrId: CLOVER
+                      Id: CFLEX
+                      SrlNb: C043EQ02120889
+              Card:
+                PrtctdCardData:
+                  CnttTp: EVLP
+                  EnvlpdData:
+                    Rcpt:
+                      KEK:
+                        KEKId:
+                          KeyId: EMSKey
+                          KeyVrsn: '20160913'
+                          DerivtnId: //+YAQE=
+                        KeyNcrptnAlgo:
+                          Algo: DKP9
+                        NcrptdKey: AAAAAAY=
+                    NcrptdCntt:
+                      CnttTp: dummyManual
+                      CnttNcrptnAlgo:
+                        Algo: E3DC
+                      NcrptdData: >-
+                        63A377559D6A4587A14DA81FABB010F5508B6161D66D9EE09A2AB236CC823AB9A38FD648F76CA052
+                CardCtryCd: NLD
+                CardCcyCd: '978'
+                CardPdctPrfl: '0008'
+                CardBrnd: E
+              Crdhldr:
+                Lang: nl
+            Cntxt:
+              PmtCntxt:
+                CardPres: 'true'
+                CrdhldrPres: 'true'
+                AttndncCntxt: ATTD
+                CardDataNtryMd: MGST
+                FllbckInd: NFLB
+            Tx:
+              TxCaptr: 'true'
+              TxTp: CRDP
+              MrchntCtgyCd: '5411'
+              TxId:
+                TxDtTm: '2021-09-23T09:13:45.000+02:00'
+                TxRef: '146040'
+              InitrTxId: 5D6ET2PS8JB28
+              RcncltnId: '1'
+              TxDtls:
+                Ccy: USD
+                TtlAmt: '80.00'
+                AmtQlfr: ACTL
+                OnLineRsn: FRLT
+                ICCRltdData: >-
+                  WgoGeZmYkAAABgGCXyoCCXhfNAEAggIcAJUFAAAAAACaAyEQI5wBAJ8CBgAAAAAYmZ8DBgAAAAAAAJ8GCqAAAAAEMGDQVgKfEAcGAQoDAAAAnxoCCCafJghkc86CqPF7jJ8nAYCfMwMD4PCfNQEAnzYCa7qfNwQ37cKw
+    AuthEMVRequest:
+      value:
+        AccptrAuthstnReq:
+          Hdr:
+            MsgFctn: AUTQ
+            PrtcolVrsn: '6.0'
+            XchgId: '43665313'
+            CreDtTm: '2021-12-02T13:33:09.000-08:00'
+            InitgPty:
+              Id: '66000001'
+              Tp: ACCP
+            RcptPty:
+              Id: '000000000001'
+              Tp: ACQR
+            Tracblt:
+              RlayId:
+                Id: TracePoint-RDNQWQJ4AXAQA
+                Tp: ACCP
+              TracDtTmIn: '2021-12-02T13:33:09.000-08:00'
+              TracDtTmOut: '2021-12-02T13:33:15.000-08:00'
+          AuthstnReq:
+            Envt:
+              Acqrr:
+                Id:
+                  Id: '000000000001'
+                ParamsVrsn: '001'
+              Mrchnt:
+                Id:
+                  Id: '100009000000035'
+                CmonNm: DNC Test Merchant Store 117
+                LctnAndCtct:
+                  PstlAdr:
+                    StrtNm: 415 N Mathilda Ave
+                    PstCd: '94085'
+                    TwnNm: Sunnyvale
+                    CtrySubDvsn: CA
+                    Ctry: US
+                  AddtlCtctInf: '81206120000117'
+              POI:
+                Id:
+                  Id: '002'
+                GrpId: '81206120000117'
+                Cpblties:
+                  CardRdngCpblties:
+                    - PHYS
+                    - MGST
+                    - CICC
+                    - CTLS
+                    - ECTL
+                  CrdhldrVrfctnCpblties:
+                    - MNSG
+                    - FCPN
+                    - FEPN
+                    - NPIN
+                    - OTHR
+                  PINLngthCpblties: '12'
+                  ApprvlCdLngth: '6'
+                  MxScrptLngth: '20'
+                  CardCaptrCpbl: 'false'
+                  OnLineCpblties: SMON
+                  MsgCpblties:
+                    Dstn:
+                      - CDSP
+                      - MDSP
+                      - CRCP
+                      - MRCP
+                    AvlblFrmt: TEXT
+                    NbOfLines: '2'
+                    LineWidth: '20'
+                    AvlblLang: en
+                Cmpnt:
+                  - Tp: APLI
+                    Id:
+                      PrvdrId: NEFTIS
+                      Id: CLOVER
+                    Sts:
+                      VrsnNb: '1.0'
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: my nexo Registration Number
+                  - Tp: TERM
+                    Id:
+                      PrvdrId: EPASVendor001
+                      Id: SmartPOI-8539
+                      SrlNb: '0E667386'
+              Card:
+                PrtctdCardData:
+                  CnttTp: EVLP
+                  EnvlpdData:
+                    Rcpt:
+                      KEK:
+                        KEKId:
+                          KeyId: TotalTestKey
+                          KeyVrsn: '20160913'
+                          DerivtnId: //+YAQE=
+                        KeyNcrptnAlgo:
+                          Algo: DKP9
+                        NcrptdKey: AAAAAAY=
+                    NcrptdCntt:
+                      CnttTp: dummyManual
+                      CnttNcrptnAlgo:
+                        Algo: E3DC
+                      NcrptdData: >-
+                        63A377559D6A4587A14DA81FABB010F5508B6161D66D9EE09A2AB236CC823AB9A38FD648F76CA052
+                CardCtryCd: USA
+                CardCcyCd: '840'
+                CardBrnd: V
+              Crdhldr:
+                TxVrfctnRslt:
+                  Mtd: PPSG
+            Cntxt:
+              PmtCntxt:
+                CardPres: 'true'
+                CrdhldrPres: 'true'
+                AttndncCntxt: ATTD
+                CardDataNtryMd: CICC
+                FllbckInd: NFLB
+                SpprtdOptn: PART
+            Tx:
+              TxCaptr: 'false'
+              TxTp: RESA
+              SvcAttr: IRES
+              MrchntCtgyCd: '5812'
+              TxId:
+                TxDtTm: '2021-12-02T13:33:09.000-08:00'
+                TxRef: '146040'
+              InitrTxId: RDNQWQJ4AXAQA
+              RcncltnId: '20211202'
+              TxDtls:
+                Ccy: USD
+                TtlAmt: '90.00'
+                AmtQlfr: ESTM
+                OnLineRsn: TRMF
+                ICCRltdData: >-
+                  5a0a067999989000000601825f2a0209785f34010082021c00950500000000009a032110239c01009f02060000000018999f03060000000000009f060aa0000000043060d056029f100706010a030000009f1a0208269f26086473ce82a8f17b8c9f2701809f330303e0f09f3501009f36026bba9f370437edc2b0
+              AddtlTxData: /request/token
+    VoidRequest:
+      value:
+        AccptrCxlAdvc:
+          Hdr:
+            MsgFctn: RVRA
+            PrtcolVrsn: '6.0'
+            XchgId: '-505311589'
+            CreDtTm: '2021-12-02T15:11:53.000-08:00'
+            InitgPty:
+              Id: '66000001'
+              Tp: ACCP
+            RcptPty:
+              Id: '000000000001'
+              Tp: ACQR
+            Tracblt:
+              RlayId:
+                Id: TracePoint-0ZF7QHBGZ4CM6
+                Tp: ACCP
+              TracDtTmIn: '2021-12-02T15:11:53.000-08:00'
+              TracDtTmOut: '2021-12-02T15:11:53.000-08:00'
+          CxlAdvc:
+            Envt:
+              Acqrr:
+                Id:
+                  Id: '000000000001'
+              Mrchnt:
+                Id:
+                  Id: '100009000000035'
+                CmonNm: DNC Test Merchant Store 117
+                LctnAndCtct:
+                  PstlAdr:
+                    StrtNm: 415 N Mathilda Ave
+                    PstCd: '94085'
+                    TwnNm: Sunnyvale
+                    CtrySubDvsn: CA
+                    Ctry: US
+                  AddtlCtctInf: '81206120000117'
+              POI:
+                Id:
+                  Id: '002'
+                GrpId: '81206120000117'
+                Cpblties:
+                  CardRdngCpblties:
+                    - PHYS
+                    - MGST
+                    - CICC
+                    - CTLS
+                    - ECTL
+                  CrdhldrVrfctnCpblties:
+                    - MNSG
+                    - FCPN
+                    - FEPN
+                    - NPIN
+                    - OTHR
+                  PINLngthCpblties: '12'
+                  ApprvlCdLngth: '6'
+                  MxScrptLngth: '20'
+                  CardCaptrCpbl: 'false'
+                  OnLineCpblties: SMON
+                  MsgCpblties:
+                    Dstn:
+                      - CDSP
+                      - MDSP
+                    AvlblFrmt: TEXT
+                    NbOfLines: '2'
+                    LineWidth: '20'
+                    AvlblLang: en
+                Cmpnt:
+                  - Tp: APLI
+                    Id:
+                      PrvdrId: NEFTIS
+                      Id: CLOVER
+                    Sts:
+                      VrsnNb: '1.0'
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: my nexo Registration Number
+                  - Tp: TERM
+                    Id:
+                      PrvdrId: EPASVendor001
+                      Id: SmartPOI-8539
+                      SrlNb: '0E667386'
+            Cntxt:
+              PmtCntxt:
+                CardPres: 'false'
+                CrdhldrPres: 'false'
+                OnLineCntxt: 'true'
+                AttndncCntxt: UATT
+                CardDataNtryMd: CDFL
+                FllbckInd: NFLB
+            Tx:
+              TxCaptr: 'false'
+              TxTp: RESA
+              SvcAttr: IRES
+              MrchntCtgyCd: '5812'
+              TxId:
+                TxDtTm: '2021-12-02T15:11:53.000-08:00'
+                TxRef: '70'
+              OrgnlTx:
+                TxId:
+                  TxDtTm: '2021-12-02T15:11:15.000-08:00'
+                  TxRef: '940'
+                POIId:
+                  Id: '002'
+                TxTp: RESA
+                SvcAttr: IRES
+              TxSucss: 'false'
+              Rvsl: 'true'
+              InitrTxId: 0ZF7QHBGZ4CM6
+              RcptTxId: '018105879413'
+              RcncltnId: '20211202'
+              TxDtls:
+                Ccy: USD
+                TtlAmt: '95.00'
+                AmtQlfr: ACTL
+    RefundRequest:
+      value:
+        AccptrAuthstnReq:
+          Hdr:
+            MsgFctn: FAUQ
+            PrtcolVrsn: '6.0'
+            XchgId: '-1712964007'
+            CreDtTm: '2021-12-02T13:35:19.000-08:00'
+            InitgPty:
+              Id: '66000001'
+              Tp: ACCP
+            RcptPty:
+              Id: '000000000001'
+              Tp: ACQR
+            Tracblt:
+              RlayId:
+                Id: TracePoint-PZAJHDDWPDRDA
+                Tp: ACCP
+              TracDtTmIn: '2021-12-02T13:35:19.000-08:00'
+              TracDtTmOut: '2021-12-02T13:35:25.000-08:00'
+          AuthstnReq:
+            Envt:
+              Acqrr:
+                Id:
+                  Id: '000000000001'
+                ParamsVrsn: '001'
+              Mrchnt:
+                Id:
+                  Id: '100009000000035'
+                CmonNm: DNC Test Merchant Store 117
+                LctnAndCtct:
+                  PstlAdr:
+                    StrtNm: 415 N Mathilda Ave
+                    PstCd: '94085'
+                    TwnNm: Sunnyvale
+                    CtrySubDvsn: CA
+                    Ctry: US
+                  AddtlCtctInf: '81206120000117'
+              POI:
+                Id:
+                  Id: '002'
+                GrpId: '81206120000117'
+                Cpblties:
+                  CardRdngCpblties:
+                    - PHYS
+                    - MGST
+                    - CICC
+                    - CTLS
+                    - ECTL
+                  CrdhldrVrfctnCpblties:
+                    - MNSG
+                    - FCPN
+                    - FEPN
+                    - NPIN
+                    - OTHR
+                  PINLngthCpblties: '12'
+                  ApprvlCdLngth: '6'
+                  MxScrptLngth: '20'
+                  CardCaptrCpbl: 'false'
+                  OnLineCpblties: SMON
+                  MsgCpblties:
+                    Dstn:
+                      - CDSP
+                      - MDSP
+                      - CRCP
+                      - MRCP
+                    AvlblFrmt: TEXT
+                    NbOfLines: '2'
+                    LineWidth: '20'
+                    AvlblLang: en
+                Cmpnt:
+                  - Tp: APLI
+                    Id:
+                      PrvdrId: NEFTIS
+                      Id: CLOVER
+                    Sts:
+                      VrsnNb: '1.0'
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: my nexo Registration Number
+                  - Tp: TERM
+                    Id:
+                      PrvdrId: EPASVendor001
+                      Id: SmartPOI-8539
+                      SrlNb: '0E667386'
+              Card:
+                PrtctdCardData:
+                  CnttTp: EVLP
+                  EnvlpdData:
+                    Rcpt:
+                      KEK:
+                        KEKId:
+                          KeyId: TotalTestKey
+                          KeyVrsn: '20160913'
+                          DerivtnId: 9Hl6pRI=
+                        KeyNcrptnAlgo:
+                          Algo: DKP9
+                        NcrptdKey: AAzgAB4=
+                    NcrptdCntt:
+                      CnttTp: DATA
+                      CnttNcrptnAlgo:
+                        Algo: E3DC
+                      NcrptdData: >-
+                        DFgHtWL9u6WB6aiHiqWmvYGklDOL+pYVtWo8XuL80xgeU3ePFgr9cr/kZYyrnX0qVb7XqFoF0jBgHW0LnJO02lnPl80OMr357uecfipEkyYzYDMPtaaVAiKs+TfFIOTxWyQPqlEPzOZaAUr2vKMpPCoiIHtImstAElcG4Iv8SFayjZCX8KaGcoHfi+G/eqGG/ps4pNIDfWR7B+slO376rLhgWwnm9sfdjg+GILRyAHoJbnCg5CbbNFy4iBEnO/JkBFF90k/+Ww8JiAtkJOQ4ww==
+                CardCtryCd: USA
+                CardCcyCd: '840'
+                CardBrnd: V
+              Crdhldr:
+                TxVrfctnRslt:
+                  Mtd: PPSG
+            Cntxt:
+              PmtCntxt:
+                CardPres: 'true'
+                CrdhldrPres: 'true'
+                AttndncCntxt: ATTD
+                CardDataNtryMd: CICC
+                FllbckInd: NFLB
+                SpprtdOptn: PART
+            Tx:
+              TxCaptr: 'true'
+              TxTp: RFND
+              MrchntCtgyCd: '5812'
+              TxId:
+                TxDtTm: '2021-12-02T13:35:19.000-08:00'
+                TxRef: '770'
+              InitrTxId: PZAJHDDWPDRDA
+              RcncltnId: '20211202'
+              TxDtls:
+                Ccy: USD
+                TtlAmt: '75.00'
+                AmtQlfr: ACTL
+                OnLineRsn: TRMF
+                ICCRltdData: >-
+                  ggIYAF80AQGfAgYAAAAAAgCfAwYAAAAAAABfKgIIQF82AQKfBwL/AJ8NBbhQrIgAnw4FAAAAAACfDwW4cJyYAFALVmlzYSBDcmVkaXSfJggb3RA1sR252J8GB6AAAAADEBCfNgIJXZ8nAYCfNANeAACfHghDNGRVMDMwWZ8QBwYBCgOgoACfOQEFnzMD4CjInxoCCECfNQEilQWAAACAAJoDIRICmwJoAJwBAJ83BDCSUqufIQMTNRmEB6AAAAADEBCfQAXwAPDwAZ8VAgAAnxILVmlzYSBDcmVkaXSfQQQAAAABnxwIQzRkVTAzMFlfKAIIQJ9TAf8=
+              AddtlTxData: /request/token
+    SaleEMVRequest:
+      value:
+        AccptrAuthstnReq:
+          Hdr:
+            MsgFctn: FAUQ
+            PrtcolVrsn: '6.0'
+            XchgId: '305'
+            CreDtTm: '2021-11-15T15:14:54.356+00:00'
+            InitgPty:
+              Id: '19191919'
+          AuthstnReq:
+            Envt:
+              Acqrr:
+                Id:
+                  Id: '1'
+                ParamsVrsn: '20190415154918'
+              Mrchnt:
+                Id:
+                  Id: '100009000000035'
+                CmonNm: Accor Hotel UAT 1Amsinckstrasse 38 Hamburg 20097290
+              POI:
+                Id:
+                  Id: '001'
+                GrpId: '81206120000113'
+                Cpblties:
+                  CardRdngCpblties:
+                    - CICC
+                  CrdhldrVrfctnCpblties:
+                    - FCPN
+                  ApprvlCdLngth: '6'
+                  OnLineCpblties: SMON
+                  MsgCpblties:
+                    - Dstn: CDSP
+                      AvlblFrmt: TEXT
+                      NbOfLines: '4'
+                      LineWidth: '32'
+                      AvlblLang: en
+                    - Dstn: CRCP
+                      AvlblFrmt: TEXT
+                      NbOfLines: '4'
+                      LineWidth: '32'
+                      AvlblLang: en
+                Cmpnt:
+                  - Tp: TERM
+                    Id:
+                      PrvdrId: CLOVER
+                      Id: PAX Q80
+                      SrlNb: '21032967'
+                  - Tp: APLI
+                    Id:
+                      PrvdrId: NOVELPAY
+                      Id: NEXO ANDROID PAYMENT APPLICATION
+                    Sts:
+                      VrsnNb: 2.0.28
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: ToComplete(giveByPayCert)
+              Card:
+                PmtAcctRef: '1528719654610119'
+                PrtctdCardData:
+                  CnttTp: EVLP
+                  EnvlpdData:
+                    Rcpt:
+                      KEK:
+                        KEKId:
+                          KeyId: EMSKey
+                          KeyVrsn: '20160913'
+                          DerivtnId: //+YAQE=
+                        KeyNcrptnAlgo:
+                          Algo: DKP9
+                        NcrptdKey: AAAAAAY=
+                    NcrptdCntt:
+                      CnttTp: dummyManual
+                      CnttNcrptnAlgo:
+                        Algo: E3DC
+                      NcrptdData: >-
+                        63A377559D6A4587A14DA81FABB010F5508B6161D66D9EE09A2AB236CC823AB9A38FD648F76CA052
+                CardCtryCd: USA
+                CardCcyCd: '840'
+                CardPdctPrfl: '0003'
+                CardBrnd: V
+              Crdhldr:
+                Lang: en
+                TxVrfctnRslt:
+                  Mtd: CPSG
+                  Rslt: SUCC
+                Authntcn:
+                  AuthntcnMtd: CPSG
+                  AuthntcnVal: ''
+            Cntxt:
+              PmtCntxt:
+                TxEnvt: MERC
+                CardDataNtryMd: CICC
+                FllbckInd: FFLB
+            Tx:
+              TxCaptr: 'true'
+              TxTp: CRDP
+              MrchntCtgyCd: ''
+              CstmrCnsnt: 'false'
+              CardPrgrmmApld: DCI
+              TxId:
+                TxDtTm: '2021-11-15T15:14:54.356+00:00'
+                TxRef: '146040'
+              InitrTxId: NHJY4NZZZ369A
+              RcncltnId: '1'
+              TxDtls:
+                Ccy: USD
+                TtlAmt: '100.00'
+                AmtQlfr: ACTL
+                DtldAmt: ''
+                OnLineRsn: ICCF
+                ICCRltdData: >-
+                  5a0a067999989000000601825f2a0209785f34010082021c00950500000000009a032110239c01009f02060000000018999f03060000000000009f060aa0000000043060d056029f100706010a030000009f1a0208269f26086473ce82a8f17b8c9f2701809f330303e0f09f3501009f36026bba9f370437edc2b0
+          SctyTrlr:
+            CnttTp: AUTH
+            AuthntcdData:
+              Rcpt:
+                KEK:
+                  KEKId:
+                    KeyId: A2MacTestKey
+                    KeyVrsn: '2016051911'
+                    DerivtnId: EAEQERA=
+                  KeyNcrptnAlgo:
+                    Algo: DKP9
+                  NcrptdKey: m6wgAAs=
+              MACAlgo:
+                Algo: MCCS
+              NcpsltdCntt:
+                CnttTp: DATA
+              MAC: Xai7v/G7zYk=
+    PartialSaleMSRRequest:
+      value:
+        AccptrAuthstnReq:
+          Hdr:
+            MsgFctn: FAUQ
+            PrtcolVrsn: '6.0'
+            XchgId: '305'
+            CreDtTm: '2021-11-15T15:14:54.356+00:00'
+            InitgPty:
+              Id: '19191919'
+          AuthstnReq:
+            Envt:
+              Acqrr:
+                Id:
+                  Id: '1'
+                ParamsVrsn: '20190415154918'
+              Mrchnt:
+                Id:
+                  Id: '100009000000035'
+                CmonNm: Accor Hotel UAT 1Amsinckstrasse 38 Hamburg 20097290
+              POI:
+                Id:
+                  Id: '001'
+                GrpId: '81206120000113'
+                Cpblties:
+                  CardRdngCpblties:
+                    - CICC
+                  CrdhldrVrfctnCpblties:
+                    - FCPN
+                  ApprvlCdLngth: '6'
+                  OnLineCpblties: SMON
+                  MsgCpblties:
+                    - Dstn: CDSP
+                      AvlblFrmt: TEXT
+                      NbOfLines: '4'
+                      LineWidth: '32'
+                      AvlblLang: en
+                    - Dstn: CRCP
+                      AvlblFrmt: TEXT
+                      NbOfLines: '4'
+                      LineWidth: '32'
+                      AvlblLang: en
+                Cmpnt:
+                  - Tp: TERM
+                    Id:
+                      PrvdrId: CLOVER
+                      Id: PAX Q80
+                      SrlNb: '21032967'
+                  - Tp: APLI
+                    Id:
+                      PrvdrId: NOVELPAY
+                      Id: NEXO ANDROID PAYMENT APPLICATION
+                    Sts:
+                      VrsnNb: 2.0.28
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: ToComplete(giveByPayCert)
+              Card:
+                PmtAcctRef: '1528719654610119'
+                PrtctdCardData:
+                  CnttTp: EVLP
+                  EnvlpdData:
+                    Rcpt:
+                      KEK:
+                        KEKId:
+                          KeyId: EMSKey
+                          KeyVrsn: '20160913'
+                          DerivtnId: //8QlwAA
+                        KeyNcrptnAlgo:
+                          Algo: DKP9
+                        NcrptdKey: DkAAGgEU
+                    NcrptdCntt:
+                      CnttTp: dummyTrack2
+                      CnttNcrptnAlgo:
+                        Algo: dummyOnGaurd
+                      NcrptdData: 428394305788607=08525859028107653583
+                CardCtryCd: USA
+                CardCcyCd: '840'
+                CardPdctPrfl: '0003'
+                CardBrnd: V
+              Crdhldr:
+                Lang: en
+                TxVrfctnRslt:
+                  Mtd: CPSG
+                  Rslt: SUCC
+                Authntcn:
+                  AuthntcnMtd: CPSG
+                  AuthntcnVal: ''
+            Cntxt:
+              PmtCntxt:
+                CardPres: 'true'
+                CrdhldrPres: 'true'
+                TxEnvt: MERC
+                CardDataNtryMd: MGST
+                FllbckInd: FFLB
+                SpprtdOptn: PART
+            Tx:
+              TxCaptr: 'true'
+              TxTp: CRDP
+              MrchntCtgyCd: ''
+              CstmrCnsnt: 'false'
+              CardPrgrmmApld: DCI
+              TxId:
+                TxDtTm: '2021-11-15T15:14:54.356+00:00'
+                TxRef: '146040'
+              InitrTxId: NHJY4NZZZ369A
+              RcncltnId: '1'
+              TxDtls:
+                Ccy: USD
+                TtlAmt: '180.00'
+                AmtQlfr: ACTL
+                OnLineRsn: ICCF
+                ICCRltdData: >-
+                  9F1A020840950500000080009A031604289F2701808407A00000000410109F3704EEDC585A9F3602000382021B809F34033F0002500A4D415354455243415244DF0201099C01009F2608956FA33B281C3AD69F3303E008085F3401129F3901079F02060000000001009F03060000000000009F0607A00000000410109F3501225F2A0208404F07A00000000410109F10120114A14003020000000000000000000000FF
+          SctyTrlr:
+            CnttTp: AUTH
+            AuthntcdData:
+              Rcpt:
+                KEK:
+                  KEKId:
+                    KeyId: A2MacTestKey
+                    KeyVrsn: '2016051911'
+                    DerivtnId: EAEQERA=
+                  KeyNcrptnAlgo:
+                    Algo: DKP9
+                  NcrptdKey: m6wgAAs=
+              MACAlgo:
+                Algo: MCCS
+              NcpsltdCntt:
+                CnttTp: DATA
+              MAC: Xai7v/G7zYk=
+    PartialAuthMSRRequest:
+      value:
+        AccptrAuthstnReq:
+          Hdr:
+            MsgFctn: AUTQ
+            PrtcolVrsn: '6.0'
+            XchgId: '305'
+            CreDtTm: '2021-11-15T15:14:54.356+00:00'
+            InitgPty:
+              Id: '19191919'
+          AuthstnReq:
+            Envt:
+              Acqrr:
+                Id:
+                  Id: '000000000001'
+                ParamsVrsn: '20190415154918'
+              Mrchnt:
+                Id:
+                  Id: '100009000000035'
+                CmonNm: Accor Hotel UAT 1Amsinckstrasse 38 Hamburg 20097290
+              POI:
+                Id:
+                  Id: EC999864
+                GrpId: '81206120000113'
+                Cpblties:
+                  CardRdngCpblties:
+                    - CICC
+                  CrdhldrVrfctnCpblties:
+                    - FCPN
+                  ApprvlCdLngth: '6'
+                  OnLineCpblties: SMON
+                  MsgCpblties:
+                    - Dstn: CDSP
+                      AvlblFrmt: TEXT
+                      NbOfLines: '4'
+                      LineWidth: '32'
+                      AvlblLang: en
+                    - Dstn: CRCP
+                      AvlblFrmt: TEXT
+                      NbOfLines: '4'
+                      LineWidth: '32'
+                      AvlblLang: en
+                Cmpnt:
+                  - Tp: TERM
+                    Id:
+                      PrvdrId: CLOVER
+                      Id: PAX Q80
+                      SrlNb: '21032967'
+                  - Tp: APLI
+                    Id:
+                      PrvdrId: NOVELPAY
+                      Id: NEXO ANDROID PAYMENT APPLICATION
+                    Sts:
+                      VrsnNb: 2.0.28
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: ToComplete(giveByPayCert)
+              Card:
+                PmtAcctRef: '1528719654610119'
+                PrtctdCardData:
+                  CnttTp: EVLP
+                  EnvlpdData:
+                    Rcpt:
+                      KEK:
+                        KEKId:
+                          KeyId: EMSKey
+                          KeyVrsn: '20160913'
+                          DerivtnId: //+ZmZkC
+                        KeyNcrptnAlgo:
+                          Algo: DKP9
+                        NcrptdKey: F6AAFwEU
+                    NcrptdCntt:
+                      CnttTp: dummyTrack2
+                      CnttNcrptnAlgo:
+                        Algo: dummyOnGaurd
+                      NcrptdData: 428394305788607=08525859028107653583
+                CardCtryCd: USA
+                CardCcyCd: '840'
+                CardPdctPrfl: '0003'
+                CardBrnd: V
+              Crdhldr:
+                Lang: en
+                TxVrfctnRslt:
+                  Mtd: CPSG
+                  Rslt: SUCC
+                Authntcn:
+                  AuthntcnMtd: CPSG
+                  AuthntcnVal: ''
+            Cntxt:
+              PmtCntxt:
+                CardPres: 'true'
+                CrdhldrPres: 'true'
+                TxEnvt: MERC
+                CardDataNtryMd: MGST
+                FllbckInd: FFLB
+                SpprtdOptn: PART
+              SaleCntxt: ''
+            Tx:
+              TxCaptr: 'true'
+              TxTp: CRDP
+              MrchntCtgyCd: ''
+              CstmrCnsnt: 'false'
+              CardPrgrmmApld: DCI
+              TxId:
+                TxDtTm: '2021-11-15T15:14:54.356+00:00'
+                TxRef: '146040'
+              InitrTxId: 5D6ET2PS8JB28
+              RcncltnId: '1'
+              TxDtls:
+                Ccy: USD
+                TtlAmt: '170.00'
+                AmtQlfr: ACTL
+                OnLineRsn: ICCF
+                ICCRltdData: >-
+                  9F1A020840950500000080009A031604289F2701808407A00000000410109F3704EEDC585A9F3602000382021B809F34033F0002500A4D415354455243415244DF0201099C01009F2608956FA33B281C3AD69F3303E008085F3401129F3901079F02060000000001009F03060000000000009F0607A00000000410109F3501225F2A0208404F07A00000000410109F10120114A14003020000000000000000000000FF
+          SctyTrlr:
+            CnttTp: AUTH
+            AuthntcdData:
+              Rcpt:
+                KEK:
+                  KEKId:
+                    KeyId: A2MacTestKey
+                    KeyVrsn: '2016051911'
+                    DerivtnId: EAEQERA=
+                  KeyNcrptnAlgo:
+                    Algo: DKP9
+                  NcrptdKey: m6wgAAs=
+              MACAlgo:
+                Algo: MCCS
+              NcpsltdCntt:
+                CnttTp: DATA
+              MAC: Xai7v/G7zYk=
+    AuthMSRResponse:
+      value:
+        AccptrAuthstnRspn:
+          Hdr:
+            MsgFctn: AUTP
+            PrtcolVrsn: '6.0'
+            XchgId: '-1248514697'
+            CreDtTm: '2022-02-18T21:47:03.616'
+            InitgPty:
+              Id: '19191919'
+            Tracblt:
+              - RlayId:
+                  Id: TracePoint-5D6ET2PS8JB28
+                  Tp: ACCP
+                TracDtTmIn: '2021-09-23T09:13:45.000+02:00'
+                TracDtTmOut: '2021-09-23T09:13:49.000+02:00'
+              - RlayId:
+                  Id: FD-IPG
+                  Tp: ITAG
+                TracDtTmIn: '2022-02-18T21:47:03.616'
+                TracDtTmOut: '2022-02-18T21:47:03.616'
+          AuthstnRspn:
+            Envt:
+              AcqrrId:
+                Id: '000000000001'
+              MrchntId:
+                Id: '100009000000035'
+              POIId:
+                Id: EC999864
+                ShrtNm: EC999864
+              Card:
+                PmtAcctRef: '1894469479681111'
+            TxRspn:
+              AuthstnRslt:
+                AuthstnNtty:
+                  Tp: CISS
+                AuthstnCd: OK8056
+                CmpltnReqrd: 'true'
+                RspnToAuthstn:
+                  Rspn: APPR
+                  RspnRsn: 000:Approved
+              Bal: {}
+            Tx:
+              TxId:
+                TxDtTm: '2021-09-23T09:13:45.000+02:00'
+                TxRef: '146040'
+              RcncltnId: '1'
+              InitrTxId: 5D6ET2PS8JB28
+              RcptTxId: 61a174f89b8841e2a820d2d9ebd6118c
+              TxDtls:
+                TtlAmt: '100.00'
+                Ccy: USD
+    SaleMSResponse:
+      value:
+        AccptrAuthstnRspn:
+          Hdr:
+            MsgFctn: FAUP
+            PrtcolVrsn: '6.0'
+            XchgId: '-1248514697'
+            CreDtTm: '2022-02-18T21:52:14.601'
+            InitgPty:
+              Id: '19191919'
+            Tracblt:
+              - RlayId:
+                  Id: TracePoint-5D6ET2PS8JB28
+                  Tp: ACCP
+                TracDtTmIn: '2021-09-23T09:13:45.000+02:00'
+                TracDtTmOut: '2021-09-23T09:13:49.000+02:00'
+              - RlayId:
+                  Id: FD-IPG
+                  Tp: ITAG
+                TracDtTmIn: '2022-02-18T21:52:14.601'
+                TracDtTmOut: '2022-02-18T21:52:14.601'
+          AuthstnRspn:
+            Envt:
+              AcqrrId:
+                Id: '000000000001'
+              MrchntId:
+                Id: '100009000000035'
+              POIId:
+                Id: EC999864
+                ShrtNm: EC999864
+              Card:
+                PmtAcctRef: '1894469479681111'
+            TxRspn:
+              AuthstnRslt:
+                AuthstnNtty:
+                  Tp: CISS
+                AuthstnCd: OK6794
+                CmpltnReqrd: 'false'
+                RspnToAuthstn:
+                  Rspn: APPR
+                  RspnRsn: 000:Approved
+              Bal: {}
+            Tx:
+              TxId:
+                TxDtTm: '2021-09-23T09:13:45.000+02:00'
+                TxRef: '146040'
+              RcncltnId: '1'
+              InitrTxId: 5D6ET2PS8JB28
+              RcptTxId: 36f8b83adf694960818ec9e5b9620346
+              TxDtls:
+                TtlAmt: '80.00'
+                Ccy: USD
+    AuthEMVResponse:
+      value:
+        AccptrAuthstnRspn:
+          Hdr:
+            MsgFctn: AUTP
+            PrtcolVrsn: '6.0'
+            XchgId: '43665313'
+            CreDtTm: '2022-02-18T21:53:59.770'
+            InitgPty:
+              Id: '66000001'
+            Tracblt:
+              - RlayId:
+                  Id: TracePoint-RDNQWQJ4AXAQA
+                  Tp: ACCP
+                TracDtTmIn: '2021-12-02T13:33:09.000-08:00'
+                TracDtTmOut: '2021-12-02T13:33:15.000-08:00'
+              - RlayId:
+                  Id: FD-IPG
+                  Tp: ITAG
+                TracDtTmIn: '2022-02-18T21:53:59.770'
+                TracDtTmOut: '2022-02-18T21:53:59.770'
+          AuthstnRspn:
+            Envt:
+              AcqrrId:
+                Id: '000000000001'
+              MrchntId:
+                Id: '100009000000035'
+              POIId:
+                Id: '002'
+              Card:
+                PmtAcctRef: '1894469479681111'
+            TxRspn:
+              AuthstnRslt:
+                AuthstnNtty:
+                  Tp: CISS
+                AuthstnCd: OK6794
+                CmpltnReqrd: 'true'
+                RspnToAuthstn:
+                  Rspn: APPR
+                  RspnRsn: 000:Approved
+              Bal: {}
+            Tx:
+              TxId:
+                TxDtTm: '2021-12-02T13:33:09.000-08:00'
+                TxRef: '146040'
+              RcncltnId: '20211202'
+              InitrTxId: RDNQWQJ4AXAQA
+              RcptTxId: 36f8b83adf694960818ec9e5b9620346
+              TxDtls:
+                TtlAmt: '90.00'
+                Ccy: USD
+                ICCRltdData: igIwMJEKPWXg5Y+hRvcwMA==
+    VoidResponse:
+      value:
+        AccptrCxlAdvcRspn:
+          Hdr:
+            MsgFctn: RVRR
+            PrtcolVrsn: '6.0'
+            XchgId: '-505311589'
+            CreDtTm: '2022-02-18T21:54:54.617'
+            InitgPty:
+              Id: '66000001'
+            Tracblt:
+              - RlayId:
+                  Id: TracePoint-0ZF7QHBGZ4CM6
+                  Tp: ACCP
+                TracDtTmIn: '2021-12-02T15:11:53.000-08:00'
+                TracDtTmOut: '2021-12-02T15:11:53.000-08:00'
+              - RlayId:
+                  Id: FD-IPG
+                  Tp: ITAG
+                TracDtTmIn: '2022-02-18T21:54:54.617'
+                TracDtTmOut: '2022-02-18T21:54:54.617'
+          CxlAdvcRspn:
+            Envt:
+              AcqrrId:
+                Id: '000000000001'
+              MrchntId:
+                Id: '100009000000035'
+              POIId:
+                Id: '002'
+              Card: {}
+            Tx:
+              TxId:
+                TxDtTm: '2021-12-02T15:11:53.000-08:00'
+                TxRef: '70'
+              RcncltnId: '20211202'
+              InitrTxId: 0ZF7QHBGZ4CM6
+              RcptTxId: 17fca65bc52047d0a48f16b08090776e
+              TxDtls:
+                TtlAmt: '95.00'
+                Ccy: USD
+              Rspn: APPR
+    RefundResponse:
+      value:
+        AccptrAuthstnRspn:
+          Hdr:
+            MsgFctn: FAUP
+            PrtcolVrsn: '6.0'
+            XchgId: '-1712964007'
+            CreDtTm: '2022-02-18T21:55:40.224'
+            InitgPty:
+              Id: '66000001'
+            Tracblt:
+              - RlayId:
+                  Id: TracePoint-PZAJHDDWPDRDA
+                  Tp: ACCP
+                TracDtTmIn: '2021-12-02T13:35:19.000-08:00'
+                TracDtTmOut: '2021-12-02T13:35:25.000-08:00'
+              - RlayId:
+                  Id: FD-IPG
+                  Tp: ITAG
+                TracDtTmIn: '2022-02-18T21:55:40.224'
+                TracDtTmOut: '2022-02-18T21:55:40.224'
+          AuthstnRspn:
+            Envt:
+              AcqrrId:
+                Id: '000000000001'
+              MrchntId:
+                Id: '100009000000035'
+              POIId:
+                Id: '002'
+              Card: {}
+            TxRspn:
+              AuthstnRslt:
+                AuthstnNtty:
+                  Tp: CISS
+                AuthstnCd: OK5692
+                CmpltnReqrd: 'false'
+                RspnToAuthstn:
+                  Rspn: APPR
+                  RspnRsn: 000:Approved
+              Bal: {}
+            Tx:
+              TxId:
+                TxDtTm: '2021-12-02T13:35:19.000-08:00'
+                TxRef: '770'
+              RcncltnId: '20211202'
+              InitrTxId: PZAJHDDWPDRDA
+              RcptTxId: 9211168cbd234bb88547c6abd9db5ce3
+              TxDtls:
+                TtlAmt: '75.00'
+                Ccy: USD
+    SaleEMVResponse:
+      value:
+        AccptrAuthstnRspn:
+          Hdr:
+            MsgFctn: FAUP
+            PrtcolVrsn: '6.0'
+            XchgId: '305'
+            CreDtTm: '2022-02-18T21:56:31.095'
+            InitgPty:
+              Id: '19191919'
+            Tracblt:
+              - RlayId:
+                  Id: FD-IPG
+                  Tp: ITAG
+                TracDtTmIn: '2022-02-18T21:56:31.095'
+                TracDtTmOut: '2022-02-18T21:56:31.095'
+          AuthstnRspn:
+            Envt:
+              AcqrrId:
+                Id: '1'
+              MrchntId:
+                Id: '100009000000035'
+              POIId:
+                Id: '001'
+              Card:
+                PmtAcctRef: '1894469479681111'
+            TxRspn:
+              AuthstnRslt:
+                AuthstnNtty:
+                  Tp: CISS
+                AuthstnCd: OK6794
+                CmpltnReqrd: 'false'
+                RspnToAuthstn:
+                  Rspn: APPR
+                  RspnRsn: 000:Approved
+              Bal: {}
+            Tx:
+              TxId:
+                TxDtTm: '2021-11-15T15:14:54.356+00:00'
+                TxRef: '146040'
+              RcncltnId: '1'
+              InitrTxId: NHJY4NZZZ369A
+              RcptTxId: 36f8b83adf694960818ec9e5b9620346
+              TxDtls:
+                TtlAmt: '100.00'
+                Ccy: USD
+                ICCRltdData: igIwMJEKcbHqPcLy4F0wMA==
+    PartialSaleMSRResponse:
+      value:
+        AccptrAuthstnRspn:
+          Hdr:
+            MsgFctn: FAUP
+            PrtcolVrsn: '6.0'
+            XchgId: '305'
+            CreDtTm: '2022-02-18T21:59:13.831'
+            InitgPty:
+              Id: '19191919'
+            Tracblt:
+              - RlayId:
+                  Id: FD-IPG
+                  Tp: ITAG
+                TracDtTmIn: '2022-02-18T21:59:13.831'
+                TracDtTmOut: '2022-02-18T21:59:13.831'
+          AuthstnRspn:
+            Envt:
+              AcqrrId:
+                Id: '1'
+              MrchntId:
+                Id: '100009000000035'
+              POIId:
+                Id: '001'
+              Card:
+                PmtAcctRef: '183760678091004'
+            TxRspn:
+              AuthstnRslt:
+                AuthstnNtty:
+                  Tp: CISS
+                AuthstnCd: OK8056
+                CmpltnReqrd: 'false'
+                RspnToAuthstn:
+                  Rspn: PART
+                  RspnRsn: 523:Approved for Partial Amount
+              Bal: {}
+            Tx:
+              TxId:
+                TxDtTm: '2021-11-15T15:14:54.356+00:00'
+                TxRef: '146040'
+              RcncltnId: '1'
+              InitrTxId: NHJY4NZZZ369A
+              RcptTxId: 8d820ef6c93e407b87711d705e6c1345
+              TxDtls:
+                TtlAmt: '100.00'
+                Ccy: USD
+    PartialAuthMSRResponse:
+      value:
+        AccptrAuthstnRspn:
+          Hdr:
+            MsgFctn: AUTP
+            PrtcolVrsn: '6.0'
+            XchgId: '305'
+            CreDtTm: '2022-02-18T22:00:18.819'
+            InitgPty:
+              Id: '19191919'
+            Tracblt:
+              - RlayId:
+                  Id: FD-IPG
+                  Tp: ITAG
+                TracDtTmIn: '2022-02-18T22:00:18.819'
+                TracDtTmOut: '2022-02-18T22:00:18.819'
+          AuthstnRspn:
+            Envt:
+              AcqrrId:
+                Id: '000000000001'
+              MrchntId:
+                Id: '100009000000035'
+              POIId:
+                Id: EC999864
+              Card:
+                PmtAcctRef: '183760678091004'
+            TxRspn:
+              AuthstnRslt:
+                AuthstnNtty:
+                  Tp: CISS
+                AuthstnCd: OK8056
+                CmpltnReqrd: 'true'
+                RspnToAuthstn:
+                  Rspn: PART
+                  RspnRsn: 523:Approved for Partial Amount
+              Bal: {}
+            Tx:
+              TxId:
+                TxDtTm: '2021-11-15T15:14:54.356+00:00'
+                TxRef: '146040'
+              RcncltnId: '1'
+              InitrTxId: 5D6ET2PS8JB28
+              RcptTxId: 8d820ef6c93e407b87711d705e6c1345
+              TxDtls:
+                TtlAmt: '70.00'
+                Ccy: USD
+   
