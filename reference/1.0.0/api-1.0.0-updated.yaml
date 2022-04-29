@@ -123,7 +123,7 @@ paths:
           #     $ref: "#/components/schemas/NexoRequest"
           application/json:
             schema:
-              test: $ref: "#/components/schemas/NexoRequest"
+              $ref: "#/components/schemas/NexoRequest"
             examples:
               Auth-MSR: {$ref: '#/components/examples/AuthMSRRequest'}
               Sale-MSR: {$ref: '#/components/examples/SaleMSRRequest'}
@@ -151,7 +151,7 @@ paths:
           content:
             application/json:
               schema: 
-                test: {$ref: '#/components/schemas/NexoResponse'}
+                $ref: '#/components/schemas/NexoResponse'
               examples:
                 Auth-MSR: {$ref: '#/components/examples/AuthMSRResponse'}
                 Sale-MSR: {$ref: '#/components/examples/SaleMSResponse'}
