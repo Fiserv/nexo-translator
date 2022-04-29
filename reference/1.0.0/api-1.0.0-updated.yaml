@@ -123,8 +123,7 @@ paths:
           #     $ref: "#/components/schemas/NexoRequest"
           application/json:
             schema:
-              #$ref: "#/components/schemas/NexoRequest"
-              $ref: '#/components/examples/AuthMSRRequest'
+              $ref: "#/components/schemas/NexoRequest"
             examples:
               Auth-MSR: {$ref: '#/components/examples/AuthMSRRequest'}
               Sale-MSR: {$ref: '#/components/examples/SaleMSRRequest'}
@@ -152,8 +151,7 @@ paths:
           content:
             application/json:
               schema: 
-                #$ref: '#/components/schemas/NexoResponse'
-                $ref: '#/components/examples/AuthMSRResponse'
+                $ref: '#/components/schemas/NexoResponse'
               examples:
                 Auth-MSR: {$ref: '#/components/examples/AuthMSRResponse'}
                 Sale-MSR: {$ref: '#/components/examples/SaleMSResponse'}
@@ -515,9 +513,9 @@ components:
       type: object
       properties:
         AccptrAuthstnReq:
-          $ref: "#/components/schemas/AcceptorAuthorizationRequest"
-        AccptrCxlAdvc:
-          $ref: "#/components/schemas/AcceptorCancellationAdvice"
+          $ref: "#/components/examples/AuthMSRRequest"
+        # AccptrCxlAdvc:
+        #   $ref: "#/components/schemas/AcceptorCancellationAdvice"
       title: NexoRequest
       xml:
         name: root
@@ -529,11 +527,11 @@ components:
       type: object
       properties:
         AccptrAuthstnRspn:
-          $ref: "#/components/schemas/AcceptedAuthorizationResponse"
-        AccptrCxlAdvcRspn:
-          $ref: "#/components/schemas/AcceptorCancellationAdviceResponse"
-        AccptrRjctn:
-          $ref: "#/components/schemas/AcceptorRejection"
+          $ref: "#/components/examples/AuthMSRResponse"
+        # AccptrCxlAdvcRspn:
+        #   $ref: "#/components/schemas/AcceptorCancellationAdviceResponse"
+        # AccptrRjctn:
+        #   $ref: "#/components/schemas/AcceptorRejection"
       title: NexoResponse
       xml:
         name: root
