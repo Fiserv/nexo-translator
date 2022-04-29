@@ -150,7 +150,8 @@ paths:
           description: Created
           content:
             application/json:
-              schema: {$ref: '#/components/schemas/NexoResponse'}
+              schema: 
+                test: {$ref: '#/components/schemas/NexoResponse'}
               examples:
                 Auth-MSR: {$ref: '#/components/examples/AuthMSRResponse'}
                 Sale-MSR: {$ref: '#/components/examples/SaleMSResponse'}
