@@ -512,10 +512,8 @@ components:
     NexoRequest:
       type: object
       properties:
-        AccptrAuthstnReq:
+        Auth-MSR:
           $ref: "#/components/examples/AuthMSRRequest"
-        # AccptrCxlAdvc:
-        #   $ref: "#/components/schemas/AcceptorCancellationAdvice"
       title: NexoRequest
       xml:
         name: root
@@ -526,12 +524,8 @@ components:
     NexoResponse:
       type: object
       properties:
-        AccptrAuthstnRspn:
+        Auth-MSR:
           $ref: "#/components/examples/AuthMSRResponse"
-        # AccptrCxlAdvcRspn:
-        #   $ref: "#/components/schemas/AcceptorCancellationAdviceResponse"
-        # AccptrRjctn:
-        #   $ref: "#/components/schemas/AcceptorRejection"
       title: NexoResponse
       xml:
         name: root
