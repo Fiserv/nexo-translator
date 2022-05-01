@@ -1213,40 +1213,9 @@ components:
                   example: "SMON"
                 MsgCpblties:
                   type: object
-                  properties:
-                    Dstn:
-                      type: string
-                      xml:
-                        name: Dstn
-                        attribute: false
-                        wrapped: false
-                        #example: {"CDSP","CCP"}
-                    AvlblFrmt:
-                      type: string
-                      xml:
-                        name: AvlblFrmt
-                        attribute: false
-                        wrapped: false
-                    NbOfLines:
-                      type: string
-                      xml:
-                        name: NbOfLines
-                        attribute: false
-                        wrapped: false
-                    LineWidth:
-                      type: string
-                      xml:
-                        name: LineWidth
-                        attribute: false
-                        wrapped: false
-                    AvlblLang:
-                      type: string
-                      xml:
-                        name: AvlblLang
-                        attribute: false
-                        wrapped: false
-                      example:
-                        MsgCpblties:
+                  xml:
+                    name: MsgCpblties
+                  example:
                         - Dstn: CDSP
                           AvlblFrmt: TEXT
                           NbOfLines: '4'
@@ -1257,6 +1226,40 @@ components:
                           NbOfLines: '4'
                           LineWidth: '32'
                           AvlblLang: en
+                    # properties:
+                    #   Dstn:
+                    #     type: string
+                    #     xml:
+                    #       name: Dstn
+                    #       attribute: false
+                    #       wrapped: false
+                    #       #example: {"CDSP","CCP"}
+                    #   AvlblFrmt:
+                    #     type: string
+                    #     xml:
+                    #       name: AvlblFrmt
+                    #       attribute: false
+                    #       wrapped: false
+                    #   NbOfLines:
+                    #     type: string
+                    #     xml:
+                    #       name: NbOfLines
+                    #       attribute: false
+                    #       wrapped: false
+                    #   LineWidth:
+                    #     type: string
+                    #     xml:
+                    #       name: LineWidth
+                    #       attribute: false
+                    #       wrapped: false
+                    #   AvlblLang:
+                    #     type: string
+                    #     xml:
+                    #       name: AvlblLang
+                    #       attribute: false
+                    #       wrapped: false
+                    
+                  
                         
 
             Cmpnt:
