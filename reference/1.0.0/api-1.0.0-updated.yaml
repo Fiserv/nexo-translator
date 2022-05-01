@@ -1084,12 +1084,13 @@ components:
                     name: Id
                     attribute: false
                     wrapped: false
+                  example: "000000000001"
                   description: Identification. Identification of the Acquirer or the Intermediary
                     Agent determined by the application from the card and other data
                     used in this transaction.
               title: AcquirerIdentification (in request)
               description: Acquirer Identification.
-              example: "000000000001"
+              
             ParamsVrsn:
               type: string
               xml:
@@ -1116,23 +1117,25 @@ components:
                     name: Id
                     attribute: false
                     wrapped: false
+                  example: "100009000000035"
                   description: Identification. Identification of the merchant.
               title: MerchantIdentification (in request)
               description: Merchant Identification.
-              example: "100009000000035"
+              
             CmonNm:
               type: string
               xml:
                 name: CmonNm
                 attribute: false
                 wrapped: false
+              example: "Accor Hotel UAT 1Amsinckstrasse 38 Hamburg 20097290"
               description: Common Name. Name of the merchant as appearing on the receipt.            
           title: Merchant
           description: Merchant. Merchant performing the card payment transaction, as a party
             providing goods and/or services at a sales location (physical or
             virtual). The Merchant signs an acquiring agreement with an Acquirer.
             The Merchant can perform the role of Acceptor or delegate it to another party.
-          example: "Accor Hotel UAT 1Amsinckstrasse 38 Hamburg 20097290"
+          
         
         POI:
           #$ref: "#/components/schemas/PointOfInteraction"
@@ -1148,20 +1151,10 @@ components:
                     name: Id
                     attribute: false
                     wrapped: false
+                  example: "EC999864"
                   description: Identification. Identification of the Point of Interaction (POI)
                     performing the transaction.
-                ShrtNm:
-                  type: string
-                  xml:
-                    name: ShrtNm
-                    attribute: false
-                    wrapped: false
-                  description: Short Name. Short name of the Point of Interaction (POI) performing
-                    the transaction.
-              title: POIIdentification (in request)
-              description: POI Identification. Identification of the Point of Interaction (POI)
-                performing the transaction.
-              example: "EC999864"
+              
             GrpId:
               type: string
               xml:
@@ -1218,13 +1211,6 @@ components:
                   description: Online Capabilities. Online and offline capabilities of the POI
                     (Point Of Interaction).
                   example: "SMON"
-                CardCaptrCpbl:
-                  type: boolean
-                  xml:
-                    name: CardCaptrCpbl
-                    attribute: false
-                    wrapped: false
-                  description: Card Capture Capable. True if the POI is able to capture card.
                 MsgCpblties:
                   type: object
                   properties:
@@ -1234,41 +1220,46 @@ components:
                         name: Dstn
                         attribute: false
                         wrapped: false
+                      example: ["CDSP","CCP"]
                     AvlblFrmt:
                       type: string
                       xml:
                         name: AvlblFrmt
                         attribute: false
                         wrapped: false
+                      example: ["TEXT","TEXT"]
                     NbOfLines:
                       type: string
                       xml:
                         name: NbOfLines
                         attribute: false
                         wrapped: false
+                      example: [4,4]
                     LineWidth:
                       type: string
                       xml:
                         name: LineWidth
                         attribute: false
                         wrapped: false
+                      example: ["32","32"]
                     AvlblLang:
                       type: string
                       xml:
                         name: AvlblLang
                         attribute: false
                         wrapped: false
-                  example:
-                    - Dstn: CDSP
-                      AvlblFrmt: TEXT
-                      NbOfLines: '4'
-                      LineWidth: '32'
-                      AvlblLang: en
-                    - Dstn: CRCP
-                      AvlblFrmt: TEXT
-                      NbOfLines: '4'
-                      LineWidth: '32'
-                      AvlblLang: en
+                      example: ["en","en"]
+                  # example:
+                  #   - Dstn: CDSP
+                  #     AvlblFrmt: TEXT
+                  #     NbOfLines: '4'
+                  #     LineWidth: '32'
+                  #     AvlblLang: en
+                  #   - Dstn: CRCP
+                  #     AvlblFrmt: TEXT
+                  #     NbOfLines: '4'
+                  #     LineWidth: '32'
+                  #     AvlblLang: en
                         
 
             Cmpnt:
