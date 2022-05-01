@@ -190,8 +190,30 @@ components:
           $ref: "#/components/schemas/DefaultSchemaHdrRequest"
         AuthstnReq:
           $ref: "#/components/schemas/DefaultSchemaAuthstnRequest"
-        # SctyTrlr:
-        #   $ref: "#/components/schemas/DefaultSctyTrlrReuqest"
+        SctyTrlr:
+          #$ref: "#/components/schemas/DefaultSchemaSctyTrlrReuqest"
+          type: object
+          xml:
+            name: SctyTrlr
+          example:
+              CnttTp: AUTH
+              AuthntcdData:
+                Rcpt:
+                  KEK:
+                    KEKId:
+                      KeyId: A2MacTestKey
+                      KeyVrsn: '2016051911'
+                      DerivtnId: EAEQERA=
+                    KeyNcrptnAlgo:
+                      Algo: DKP9
+                    NcrptdKey: m6wgAAs=
+                MACAlgo:
+                  Algo: MCCS
+                NcpsltdCntt:
+                  CnttTp: DATA
+                MAC: Xai7v/G7zYk=
+
+
 
         # AuthstnReq:
         #   $ref: "#/components/schemas/AuthorizationRequest"
