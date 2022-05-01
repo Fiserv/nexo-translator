@@ -645,8 +645,6 @@ components:
       properties:
         AccptrAuthstnReq:
           $ref: "#/components/schemas/AcceptorAuthorizationRequest"
-        # AccptrCxlAdvc:
-        #   $ref: "#/components/schemas/AcceptorCancellationAdvice"
       title: NexoRequest
       xml:
         name: root
