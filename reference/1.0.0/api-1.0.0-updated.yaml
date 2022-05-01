@@ -303,9 +303,85 @@ components:
         Envt:
           $ref: "#/components/schemas/Default_Schema_Environment_in_request_"
         Cntxt:
-          $ref: "#/components/schemas/Context"
+          #$ref: "#/components/schemas/Context"
+          type: object
+          properties:
+            PmtCntxt:
+              type: object
+              xml:
+                name: PmtCntxt
+              example:
+                CardPres: 'true'
+                CrdhldrPres: 'true'
+                TxEnvt: MERC
+                CardDataNtryMd: MGST
+                FllbckInd: FFLB
+                SpprtdOptn: PART
+            SaleCntxt:
+              type: string
+              xml:
+                name: SaleCntxt
+              example: ""
+              
         Tx:
-          $ref: "#/components/schemas/Transaction_in_request_"
+          #$ref: "#/components/schemas/Transaction_in_request_"
+          type: object
+          properties:
+            TxCaptr:
+              type: string
+              xml:
+                name: TxCaptr
+              example: "true"
+            TxTp:
+              type: string
+              xml:
+                name: TxTp
+              example: 'CRDP'
+            MrchntCtgyCd:
+              type: string
+              xml:
+                name: MrchntCtgyCd
+              example: ''
+            CstmrCnsnt:
+              type: string
+              xml:
+                name: CstmrCnsnt
+              example: 'false'
+            CardPrgrmmApld:
+              type: string
+              xml:
+                name: CardPrgrmmApld
+              example: 'DCI'
+            TxId:
+              type: object
+              xml:
+                name: TxId
+              example:
+                TxDtTm: '2021-11-15T15:14:54.356+00:00'
+                TxRef: '146040'
+            InitrTxId:
+              type: string
+              xml:
+                name: InitrTxId
+              example: '5D6ET2PS8JB28'
+            RcncltnId:
+              type: string
+              xml:
+                name: RcncltnId
+              example: '1'
+            TxDtls:
+              type: object
+              xml:
+                name: TxDtls
+              example:
+                Ccy: USD
+                TtlAmt: '170.00'
+                AmtQlfr: ACTL
+                OnLineRsn: ICCF
+                ICCRltdData: >-
+                  9F1A020840950500000080009A031604289F2701808407A00000000410109F3704EEDC585A9F3602000382021B809F34033F0002500A4D415354455243415244DF0201099C01009F2608956FA33B281C3AD69F3303E008085F3401129F3901079F02060000000001009F03060000000000009F0607A00000000410109F3501225F2A0208404F07A00000000410109F10120114A14003020000000000000000000000FF
+            
+
       title: AuthorizationRequest
       description: Authorization Request. An authorization is used in a card payment to
         request the approval of the transaction.
@@ -1327,9 +1403,6 @@ components:
               example:
                   AuthntcnMtd: CPSG
                   AuthntcnVal: ''
-            
-
-             
 
       title: Environment (in request)
       description: Environment. Environment of the transaction. Contains information
