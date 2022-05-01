@@ -1220,46 +1220,46 @@ components:
                         name: Dstn
                         attribute: false
                         wrapped: false
-                      example: ["CDSP","CCP"]
+                      #example: ["CDSP","CCP"]
                     AvlblFrmt:
                       type: string
                       xml:
                         name: AvlblFrmt
                         attribute: false
                         wrapped: false
-                      example: ["TEXT","TEXT"]
+                      #example: ["TEXT","TEXT"]
                     NbOfLines:
                       type: string
                       xml:
                         name: NbOfLines
                         attribute: false
                         wrapped: false
-                      example: [4,4]
+                      #example: [4,4]
                     LineWidth:
                       type: string
                       xml:
                         name: LineWidth
                         attribute: false
                         wrapped: false
-                      example: ["32","32"]
+                      #example: ["32","32"]
                     AvlblLang:
                       type: string
                       xml:
                         name: AvlblLang
                         attribute: false
                         wrapped: false
-                      example: ["en","en"]
-                  # example:
-                  #   - Dstn: CDSP
-                  #     AvlblFrmt: TEXT
-                  #     NbOfLines: '4'
-                  #     LineWidth: '32'
-                  #     AvlblLang: en
-                  #   - Dstn: CRCP
-                  #     AvlblFrmt: TEXT
-                  #     NbOfLines: '4'
-                  #     LineWidth: '32'
-                  #     AvlblLang: en
+                      #example: ["en","en"]
+                      example:
+                        - Dstn: CDSP
+                          AvlblFrmt: TEXT
+                          NbOfLines: '4'
+                          LineWidth: '32'
+                          AvlblLang: en
+                        - Dstn: CRCP
+                          AvlblFrmt: TEXT
+                          NbOfLines: '4'
+                          LineWidth: '32'
+                          AvlblLang: en
                         
 
             Cmpnt:
