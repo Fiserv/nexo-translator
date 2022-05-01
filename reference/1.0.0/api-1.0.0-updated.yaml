@@ -1333,70 +1333,91 @@ components:
             Cpblties:
               #$ref: "#/components/schemas/POICapabilities"
               type: object
-              properties:
+              xml:
+                name: Cpblties
+              example:
                 CardRdngCpblties:
-                  type: array
-                  xml:
-                    name: CardRdngCpblties
-                    attribute: false
-                    wrapped: false
-                  description: Card Reading Capabilities. Card reading capabilities of the POI
-                    (Point Of Interaction) performing the transaction.
-                  items:
-                    type: string
-                  example: "CICC"
+                    - CICC
                 CrdhldrVrfctnCpblties:
-                  type: array
-                  xml:
-                    name: CrdhldrVrfctnCpblties
-                    attribute: false
-                    wrapped: false
-                  description: Cardholder Verification Capabilities. Cardholder verification
-                    capabilities of the POI (Point Of Interaction) performing the
-                    transaction.
-                  items:
-                    type: string
-                  example: "FCPN"
-                ApprvlCdLngth:
-                  type: integer
-                  format: int32
-                  xml:
-                    name: ApprvlCdLngth
-                    attribute: false
-                    wrapped: false
-                  description: Approval Code Length. Maximum number of characters of the approval
-                    code supported by the POI.
-                  example: "6"
-                OnLineCpblties:
-                  type: string
-                  xml:
-                    name: OnLineCpblties
-                    attribute: false
-                    wrapped: false
-                  description: Online Capabilities. Online and offline capabilities of the POI
-                    (Point Of Interaction).
-                  example: "SMON"
+                    - FCPN
+                ApprvlCdLngth: '6'
+                OnLineCpblties: SMON
                 MsgCpblties:
-                  type: object
-                  xml:
-                    name: MsgCpblties
-                  example:
-                        - Dstn: CDSP
-                          AvlblFrmt: TEXT
-                          NbOfLines: '4'
-                          LineWidth: '32'
-                          AvlblLang: en
-                        - Dstn: CRCP
-                          AvlblFrmt: TEXT
-                          NbOfLines: '4'
-                          LineWidth: '32'
-                          AvlblLang: en
+                  - Dstn: CDSP
+                    AvlblFrmt: TEXT
+                    NbOfLines: '4'
+                    LineWidth: '32'
+                    AvlblLang: en
+                  - Dstn: CRCP
+                    AvlblFrmt: TEXT
+                    NbOfLines: '4'
+                    LineWidth: '32'
+                    AvlblLang: en
+                      
+                    
+
+              # properties:
+              #   CardRdngCpblties:
+              #     type: array
+              #     xml:
+              #       name: CardRdngCpblties
+              #       attribute: false
+              #       wrapped: false
+              #     description: Card Reading Capabilities. Card reading capabilities of the POI
+              #       (Point Of Interaction) performing the transaction.
+              #     items:
+              #       type: string
+              #     example: ["CICC"]
+              #   CrdhldrVrfctnCpblties:
+              #     type: array
+              #     xml:
+              #       name: CrdhldrVrfctnCpblties
+              #       attribute: false
+              #       wrapped: false
+              #     description: Cardholder Verification Capabilities. Cardholder verification
+              #       capabilities of the POI (Point Of Interaction) performing the
+              #       transaction.
+              #     items:
+              #       type: string
+              #     example: "FCPN"
+              #   ApprvlCdLngth:
+              #     type: integer
+              #     format: int32
+              #     xml:
+              #       name: ApprvlCdLngth
+              #       attribute: false
+              #       wrapped: false
+              #     description: Approval Code Length. Maximum number of characters of the approval
+              #       code supported by the POI.
+              #     example: "6"
+              #   OnLineCpblties:
+              #     type: string
+              #     xml:
+              #       name: OnLineCpblties
+              #       attribute: false
+              #       wrapped: false
+              #     description: Online Capabilities. Online and offline capabilities of the POI
+              #       (Point Of Interaction).
+              #     example: "SMON"
+              #   MsgCpblties:
+              #     type: object
+              #     xml:
+              #       name: MsgCpblties
+              #     example:
+              #           - Dstn: CDSP
+              #             AvlblFrmt: TEXT
+              #             NbOfLines: '4'
+              #             LineWidth: '32'
+              #             AvlblLang: en
+              #           - Dstn: CRCP
+              #             AvlblFrmt: TEXT
+              #             NbOfLines: '4'
+              #             LineWidth: '32'
+              #             AvlblLang: en
             Cmpnt:
               type: object
               xml:
                 name: Cmpnt
-                attribute: false
-                wrapped: false
               example:
                 - Tp: TERM
                   Id:
@@ -1407,16 +1428,16 @@ components:
                   Id:
                     PrvdrId: NOVELPAY
                     Id: NEXO ANDROID PAYMENT APPLICATION
-                    Sts:
-                      VrsnNb: 2.0.28
-                    StdCmplc:
-                      Id: nexo-IS
-                      Vrsn: '4.0'
-                      Issr: nexo
-                    Assmnt:
-                      Tp: CERT
-                      Assgnr: OSCAR
-                      Nb: ToComplete(giveByPayCert) 
+                  Sts:
+                    VrsnNb: 2.0.28
+                  StdCmplc:
+                    Id: nexo-IS
+                    Vrsn: '4.0'
+                    Issr: nexo
+                  Assmnt:
+                    Tp: CERT
+                    Assgnr: OSCAR
+                    Nb: ToComplete(giveByPayCert) 
 
         Card:
           #$ref: "#/components/schemas/Card_in_request_"
@@ -1427,10 +1448,10 @@ components:
               xml:
                 name: PmtAcctRef
               example: '1528719654610119'
-            ProtectedCardData:
+            PrtctdCardData:
               type: object
               xml:
-                name: ProtectedCardData
+                name: PrtctdCardData
               example:
                 CnttTp: EVLP
                 EnvlpdData:
@@ -1442,12 +1463,12 @@ components:
                         DerivtnId: //+ZmZkC
                       KeyNcrptnAlgo:
                         Algo: DKP9
-                        NcrptdKey: F6AAFwEU
-                    NcrptdCntt:
-                      CnttTp: dummyTrack2
-                      CnttNcrptnAlgo:
-                        Algo: dummyOnGaurd
-                      NcrptdData: 428394305788607=08525859028107653583
+                      NcrptdKey: F6AAFwEU
+                  NcrptdCntt:
+                    CnttTp: dummyTrack2
+                    CnttNcrptnAlgo:
+                      Algo: dummyOnGaurd
+                    NcrptdData: 428394305788607=08525859028107653583
             CardCtryCd:
               type: string
               xml:
