@@ -186,10 +186,17 @@ components:
     AcceptorAuthorizationRequest:
       type: object
       properties:
-        AuthstnReq:
-          $ref: "#/components/schemas/AuthorizationRequest"
         Hdr:
-          $ref: "#/components/schemas/Header_in_request_"
+          $ref: "#/components/schemas/DefaultSchemaHdrRequest"
+        # AuthstnReq:
+        #   $ref: "#/components/schemas/DefaultAuthstnRequest"
+        # SctyTrlr:
+        #   $ref: "#/components/schemas/DefaultSctyTrlrReuqest"
+
+        # AuthstnReq:
+        #   $ref: "#/components/schemas/AuthorizationRequest"
+        # Hdr:
+        #   $ref: "#/components/schemas/Header_in_request_"
       title: AcceptorAuthorizationRequest
       description: Acceptor Authorization Request. An authorization is used in a card
         payment to request the approval of the transaction.Sent by an acceptor
@@ -509,6 +516,20 @@ components:
         virtual). The Merchant signs an acquiring agreement with an Acquirer.
         The Merchant can perform the role of Acceptor or delegate it to another
         party.
+    # NexoRequest:
+    #   type: object
+    #   properties:
+    #     AccptrAuthstnReq:
+    #       $ref: "#/components/schemas/AcceptorAuthorizationRequest"
+    #     AccptrCxlAdvc:
+    #       $ref: "#/components/schemas/AcceptorCancellationAdvice"
+    #   title: NexoRequest
+    #   xml:
+    #     name: root
+    #     attribute: false
+    #     wrapped: false
+    #   description: Nexo Request. Supports a subset of CAPE Card Payments messages in the
+    #     context of the acceptor-to-acquirer transactions.
     NexoRequest:
       type: object
       properties:
@@ -1138,6 +1159,67 @@ components:
       title: Header (in response)
       description: Header. Conveys information related to the protocol management on a
         segment of the path from the Acceptor to the Acquirer.
+    DefaultSchemaHdrRequest:
+      type: object
+      properties:
+        MsgFctn:
+          type: string
+          xml:
+            name: MsgFctn
+            attribute: false
+            wrapped: false
+          description: Message Function. Identifies the type of process related to the
+            message.
+          example: AUTQ
+        PrtcolVrsn:
+          type: string
+          xml:
+            name: PrtcolVrsn
+            attribute: false
+            wrapped: false
+          description: Protocol Version. Identifies the version of the protocol used in the
+            exchange.
+          example: '6.0'
+        XchgId:
+          type: string
+          xml:
+            name: XchgId
+            #value: '305'
+            attribute: false
+            wrapped: false
+          description: Exchange Identification. Provides unique identification of the
+            exchange of messages (request/response) for a specific service.
+          example: '305'
+        CreDtTm:
+          type: string
+          xml:
+            name: CreDtTm
+            #value: '2021-11-15T15:14:54.356+00:00'
+            attribute: false
+            wrapped: false
+          description: Creation Date Time. Date and time of the creation of the message.
+          example: '2021-11-15T15:14:54.356+00:00'
+        InitgPty:
+          $ref: "#/components/schemas/DefaultSchema_InitiatingParty_in_request_"         
+      title: Header (in request)
+      description: Header. Conveys information related to the protocol management on a
+        segment of the path from the Acceptor to the Acquirer.
+    DefaultSchema_InitiatingParty_in_request_:
+      type: object
+      properties:
+        Id:
+          type: string
+          xml:
+            name: Id
+            #value: '19191919'
+            attribute: false
+            wrapped: false
+          description: Identification. The value of this identifier is bilaterally agreed
+            between Initiating Party and Recipient Party.
+          example: '19191919'
+      title: InitiatingParty (in request)
+      description: Initiating Party. Information used to identify the initiator of an
+        exchange.
     InitiatingParty_in_request_:
       type: object
       properties:
