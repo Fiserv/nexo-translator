@@ -645,6 +645,8 @@ components:
       properties:
         AccptrAuthstnReq:
           $ref: "#/components/schemas/AcceptorAuthorizationRequest"
+        # AccptrCxlAdvc:
+        #   $ref: "#/components/schemas/AcceptorCancellationAdvice"
       title: NexoRequest
       xml:
         name: root
@@ -652,15 +654,82 @@ components:
         wrapped: false
       description: Nexo Request. Supports a subset of CAPE Card Payments messages in the
         context of the acceptor-to-acquirer transactions.
+    # NexoResponse:
+    #   type: object
+    #   properties:
+    #     AccptrAuthstnRspn:
+    #       $ref: "#/components/schemas/AcceptedAuthorizationResponse"
+    #     AccptrCxlAdvcRspn:
+    #       $ref: "#/components/schemas/AcceptorCancellationAdviceResponse"
+    #     AccptrRjctn:
+    #       $ref: "#/components/schemas/AcceptorRejection"
+    #   title: NexoResponse
+    #   xml:
+    #     name: root
+    #     attribute: false
+    #     wrapped: false
+    #   description: Nexo Response. Supports a subset of CAPE Card Payments messages in the
+    #     context of the acceptor-to-acquirer transactions.
+
     NexoResponse:
       type: object
       properties:
         AccptrAuthstnRspn:
-          $ref: "#/components/schemas/AcceptedAuthorizationResponse"
-        AccptrCxlAdvcRspn:
-          $ref: "#/components/schemas/AcceptorCancellationAdviceResponse"
-        AccptrRjctn:
-          $ref: "#/components/schemas/AcceptorRejection"
+          #$ref: "#/components/schemas/AcceptedAuthorizationResponse"
+          type: object
+          xml:
+            name: AccptrAuthstnRspn
+          example:
+            Hdr:
+              MsgFctn: AUTP
+              PrtcolVrsn: '6.0'
+              XchgId: '-1248514697'
+              CreDtTm: '2022-02-18T21:47:03.616'
+              InitgPty:
+                Id: '19191919'
+              Tracblt:
+                - RlayId:
+                    Id: TracePoint-5D6ET2PS8JB28
+                    Tp: ACCP
+                  TracDtTmIn: '2021-09-23T09:13:45.000+02:00'
+                  TracDtTmOut: '2021-09-23T09:13:49.000+02:00'
+                - RlayId:
+                    Id: FD-IPG
+                    Tp: ITAG
+                  TracDtTmIn: '2022-02-18T21:47:03.616'
+                  TracDtTmOut: '2022-02-18T21:47:03.616'
+            AuthstnRspn:
+              Envt:
+                AcqrrId:
+                  Id: '000000000001'
+                MrchntId:
+                  Id: '100009000000035'
+                POIId:
+                  Id: EC999864
+                  ShrtNm: EC999864
+                Card:
+                  PmtAcctRef: '1894469479681111'
+              TxRspn:
+                AuthstnRslt:
+                  AuthstnNtty:
+                    Tp: CISS
+                  AuthstnCd: OK8056
+                  CmpltnReqrd: 'true'
+                  RspnToAuthstn:
+                    Rspn: APPR
+                    RspnRsn: 000:Approved
+                Bal: {}
+              Tx:
+                TxId:
+                  TxDtTm: '2021-09-23T09:13:45.000+02:00'
+                  TxRef: '146040'
+                RcncltnId: '1'
+                InitrTxId: 5D6ET2PS8JB28
+                RcptTxId: 61a174f89b8841e2a820d2d9ebd6118c
+                TxDtls:
+                  TtlAmt: '100.00'
+                  Ccy: USD
+
       title: NexoResponse
       xml:
         name: root
