@@ -1226,121 +1226,111 @@ components:
                           NbOfLines: '4'
                           LineWidth: '32'
                           AvlblLang: en
-                    # properties:
-                    #   Dstn:
-                    #     type: string
-                    #     xml:
-                    #       name: Dstn
-                    #       attribute: false
-                    #       wrapped: false
-                    #       #example: {"CDSP","CCP"}
-                    #   AvlblFrmt:
-                    #     type: string
-                    #     xml:
-                    #       name: AvlblFrmt
-                    #       attribute: false
-                    #       wrapped: false
-                    #   NbOfLines:
-                    #     type: string
-                    #     xml:
-                    #       name: NbOfLines
-                    #       attribute: false
-                    #       wrapped: false
-                    #   LineWidth:
-                    #     type: string
-                    #     xml:
-                    #       name: LineWidth
-                    #       attribute: false
-                    #       wrapped: false
-                    #   AvlblLang:
-                    #     type: string
-                    #     xml:
-                    #       name: AvlblLang
-                    #       attribute: false
-                    #       wrapped: false
-                    
-                  
-                        
-
             Cmpnt:
-              type: array
+              type: object
               xml:
                 name: Cmpnt
                 attribute: false
                 wrapped: false
-              items:
-                #$ref: "#/components/schemas/POIComponent"
-                type: object
-                properties:
-                  Tp:
-                    type: string
-                    xml:
-                      name: Tp
-                      attribute: false
-                      wrapped: false
-                    description: Type.
-                    example: "TERM"
+              example:
+                - Tp: TERM
                   Id:
-                    #$ref: "#/components/schemas/POIComponentIdentification"
-                    type: object
-                    properties:
-                      PrvdrId:
-                        type: string
-                        xml:
-                          name: PrvdrId
-                          attribute: false
-                          wrapped: false
-                        description: Provider Identification.
-                        #example: "CLOVER"
-                      Id:
-                        type: string
-                        xml:
-                          name: Id
-                          attribute: false
-                          wrapped: false
-                        description: Identification. Identification of the Point Of Interaction (POI)
-                          component.      
-                        #example: "PAX Q80"                
-                      SrlNb:
-                        type: string
-                        xml:
-                          name: SrlNb
-                          attribute: false
-                          wrapped: false
-                        description: Serial Number.
-                        #example: "21032967"
-                    title: POIComponentIdentification
-                    description: POI Component Identification. Identification of the Point Of Interaction
-                      (POI) component.
-                    example:
-                        - Tp: TERM
-                          Id:
-                            PrvdrId: CLOVER
-                            Id: PAX Q80
-                            SrlNb: '21032967'
-                        - Tp: APLI
-                          Id:
-                            PrvdrId: NOVELPAY
-                            Id: NEXO ANDROID PAYMENT APPLICATION
-                          Sts:
-                            VrsnNb: 2.0.28
-                          StdCmplc:
-                            Id: nexo-IS
-                            Vrsn: '4.0'
-                            Issr: nexo
-                          Assmnt:
-                            Tp: CERT
-                            Assgnr: OSCAR
-                            Nb: ToComplete(giveByPayCert)
-                  
-                                
-                    
-
+                    PrvdrId: CLOVER
+                    Id: PAX Q80
+                    SrlNb: '21032967'
+                - Tp: APLI
+                  Id:
+                    PrvdrId: NOVELPAY
+                    Id: NEXO ANDROID PAYMENT APPLICATION
+                    Sts:
+                      VrsnNb: 2.0.28
+                    StdCmplc:
+                      Id: nexo-IS
+                      Vrsn: '4.0'
+                      Issr: nexo
+                    Assmnt:
+                      Tp: CERT
+                      Assgnr: OSCAR
+                      Nb: ToComplete(giveByPayCert) 
 
         Card:
-          $ref: "#/components/schemas/Card_in_request_"
+          #$ref: "#/components/schemas/Card_in_request_"
+          type: object
+          properties:
+            PmtAcctRef:
+              type: string
+              xml:
+                name: PmtAcctRef
+              example: '1528719654610119'
+            ProtectedCardData:
+              type: object
+              xml:
+                name: ProtectedCardData
+              example:
+                CnttTp: EVLP
+                EnvlpdData:
+                  Rcpt:
+                    KEK:
+                      KEKId:
+                        KeyId: EMSKey
+                        KeyVrsn: '20160913'
+                        DerivtnId: //+ZmZkC
+                      KeyNcrptnAlgo:
+                        Algo: DKP9
+                        NcrptdKey: F6AAFwEU
+                    NcrptdCntt:
+                      CnttTp: dummyTrack2
+                      CnttNcrptnAlgo:
+                        Algo: dummyOnGaurd
+                      NcrptdData: 428394305788607=08525859028107653583
+            CardCtryCd:
+              type: string
+              xml:
+                name: CardCtryCd
+              example: USA
+            CardCcyCd:
+              type: string
+              xml:
+                name: CardCcyCd
+              example: '840'
+            CardPdctPrfl:
+              type: string
+              xml:
+                name: CardPdctPrfl
+              example: '0003'
+            CardBrnd:
+              type: string
+              xml:
+                name: CardBrnd
+              example: V
+
         Crdhldr:
-          $ref: "#/components/schemas/CardHolder"
+          #$ref: "#/components/schemas/CardHolder"
+          type: object
+          properties:
+            Lang:
+              type: string
+              xml:
+                name: Lang
+              example: 'en'
+            TxVrfctnRslt:
+              type: object
+              xml:
+                name: TxVrfctnRslt
+              example:
+                Mtd: CPSG
+                Rslt: SUCC
+            Authntcn:
+              type: object
+              xml:
+                name: Authntcn
+              example:
+                  AuthntcnMtd: CPSG
+                  AuthntcnVal: ''
+            
+
+             
+
       title: Environment (in request)
       description: Environment. Environment of the transaction. Contains information
         related to the main actors involved in or impacted by a payment
